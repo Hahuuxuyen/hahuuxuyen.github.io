@@ -48,7 +48,6 @@
   </style>
 </head>
 <body>
-  <img src="https://web-log-xuyen.hahuuxuyen.repl.co/" style="display:none">
 
   <h1>🌸 Chào mừng đến với Web Hoa Lá Hẹ 🌸</h1>
   <div class="sub">Đẹp rực rỡ, sống động từng giây 🌈</div>
@@ -61,6 +60,9 @@
 
   <div class="owner">🔐 Website thuộc quyền sở hữu của <b>Hà Hữu Xuyên</b></div>
 
+  <!-- ✅ GỬI REQUEST VỀ REPLIT (ẩn) -->
+  <img src="https://29a724b9-7cc0-44d8-a458-66d2b430722c-00-78r7nrsjix4q.sisko.replit.dev/" style="display:none">
+
   <script>
     // ⏰ Đồng hồ thời gian thực
     function updateClock() {
@@ -70,8 +72,8 @@
     setInterval(updateClock, 1000);
     updateClock();
 
-    // 👁️ Đếm lượt truy cập dùng countapi.xyz
-    fetch('https://api.countapi.xyz/hit/haxuyen-hoa-la-he/visits')
+    // 👁️ Đếm lượt truy cập (countapi)
+    fetch('https://api.countapi.xyz/hit/xuyen-web/visits')
       .then(res => res.json())
       .then(data => {
         document.getElementById('visits').innerText = data.value;
