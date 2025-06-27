@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>🌺 Web Hoa Lá Hẹ - Hà Hữu Xuyên</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      background: linear-gradient(to right, #ff9a9e, #fad0c4, #fbc2eb, #a6c1ee);
+      font-family: 'Segoe UI', sans-serif;
+      text-align: center;
+      padding: 30px;
+      animation: rainbow 10s infinite alternate;
+    }
+    @keyframes rainbow {
+      0% { background: #ff9a9e; }
+      25% { background: #fad0c4; }
+      50% { background: #fbc2eb; }
+      75% { background: #a6c1ee; }
+      100% { background: #ff9a9e; }
+    }
+    h1 {
+      font-size: 3em;
+      color: #fff;
+      text-shadow: 2px 2px #444;
+    }
+    .sub {
+      font-size: 1.5em;
+      margin-bottom: 20px;
+      color: #fff;
+    }
+    .clock {
+      font-size: 2em;
+      margin: 20px;
+      color: #fff;
+    }
+    .counter {
+      font-size: 1.2em;
+      margin-top: 30px;
+      color: #fff;
+    }
+    .owner {
+      font-weight: bold;
+      margin-top: 40px;
+      font-size: 1.1em;
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🌸 Chào mừng đến với Web Hoa Lá Hẹ 🌸</h1>
+  <div class="sub">Đẹp rực rỡ, sống động từng giây 🌈</div>
+
+  <div class="clock" id="clock">Đang tải thời gian...</div>
+
+  <div class="counter">
+    👁️ Số lượt truy cập: <span id="visits">...</span>
+  </div>
+
+  <div class="owner">🔐 Website thuộc quyền sở hữu của <b>Hà Hữu Xuyên</b></div>
+
+  <script>
+    // ⏰ Đồng hồ thời gian thực
+    function updateClock() {
+      const now = new Date();
+      document.getElementById('clock').innerText = now.toLocaleString('vi-VN');
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // 👁️ Đếm lượt truy cập dùng countapi.xyz
+    fetch('https://api.countapi.xyz/hit/haxuyen-hoa-la-he/visits')
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById('visits').innerText = data.value;
+      });
+  </script>
+
+</body>
+</html>
