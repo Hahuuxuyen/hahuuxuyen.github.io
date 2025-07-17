@@ -1,40 +1,122 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <title>🌺 Web Hoa Lá Hẹ - Hà Hữu Xuyên</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Hoàng Tử (Luxury) - Dịch Vụ MXH</title>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
   <style>
     body {
-      background: linear-gradient(to right, #ff9a9e, #fad0c4, #fbc2eb, #a6c1ee);
-      font-family: 'Segoe UI', sans-serif;
-      text-align: center;
-      padding: 30px;
-      animation: rainbow 10s infinite alternate;
+      font-family: 'Quicksand', sans-serif;
+      background: #f7f7f7;
+      margin: 0;
+      padding: 0;
     }
-    @keyframes rainbow {
-      0% { background: #ff9a9e; }
-      25% { background: #fad0c4; }
-      50% { background: #fbc2eb; }
-      75% { background: #a6c1ee; }
-      100% { background: #ff9a9e; }
+    header {
+      background: #000;
+      color: #fff;
+      text-align: center;
+      padding: 30px 10px;
     }
     h1 {
-      font-size: 3em;
-      color: #fff;
-      text-shadow: 2px 2px #444;
+      margin: 0;
+      font-size: 28px;
     }
-    .sub {
-      font-size: 1.5em;
+    section {
+      padding: 20px;
+      max-width: 900px;
+      margin: auto;
+    }
+    .box {
+      background: #fff;
+      padding: 20px;
       margin-bottom: 20px;
-      color: #fff;
+      border-left: 6px solid #444;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
-    .clock {
-      font-size: 2em;
-      margin: 20px;
-      color: #fff;
+    .title {
+      font-size: 20px;
+      margin-bottom: 10px;
+      font-weight: 700;
+      color: #333;
     }
-    .counter {
+    ul {
+      padding-left: 20px;
+      line-height: 1.8;
+    }
+    .note {
+      color: red;
+      font-size: 14px;
+      margin-top: 15px;
+    }
+    footer {
+      background: #000;
+      color: #fff;
+      text-align: center;
+      padding: 10px 0;
+      margin-top: 30px;
+    }
+    .order-btn {
+      display: inline-block;
+      margin-top: 15px;
+      padding: 10px 20px;
+      background: #28a745;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+    .order-btn:hover {
+      background: #218838;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>👑 Hoàng Tử (Luxury)</h1>
+    <p>Dịch Vụ Mạng Xã Hội Uy Tín</p>
+  </header>
+
+  <section>
+    <div class="box">
+      <div class="title">📘 Facebook:</div>
+      <ul>
+        <li>Theo dõi TCN + Page: <strong>30k / 1000 follow</strong></li>
+        <li>Tăng like bài viết: <strong>20k / 1000 like</strong></li>
+        <li>Tăng like story (icon khác): <strong>15k / 1000 like</strong></li>
+        <li>Tăng mem group: <strong>50k / 1000 mem</strong></li>
+        <li>Các dịch vụ khác (mở khóa, tích xanh): <strong>IB riêng</strong></li>
+      </ul>
+      <a class="order-btn" href="https://t.me/username_telegram_cua_ban" target="_blank">Đặt Hàng Facebook</a>
+    </div>
+
+    <div class="box">
+      <div class="title">🎵 TikTok:</div>
+      <ul>
+        <li>Following:</li>
+        <ul>
+          <li>Thường: <strong>40k / 1000 follow</strong></li>
+          <li>VIP (Người thật bấm tay): <strong>300k / 1000 follow</strong></li>
+        </ul>
+        <li>Tăng View: <strong>10k / 1000 view</strong></li>
+        <li>Tăng Tim: <strong>15k / 1000 tim</strong></li>
+        <li>Tăng điểm PK: <strong>10k / 1000 điểm</strong></li>
+      </ul>
+      <a class="order-btn" href="https://t.me/username_telegram_cua_ban" target="_blank">Đặt Hàng TikTok</a>
+    </div>
+
+    <div class="note">
+      ⚠️ Lưu ý: Các dịch vụ tương tác có rủi ro, có thể bị tụt do nền tảng quét. <br/>
+      ❌ Không bảo hành các dịch vụ tương tác!
+    </div>
+  </section>
+
+  <footer>
+    Cảm ơn bạn đã ủng hộ! 🎩 Liên hệ ngay để được hỗ trợ.
+  </footer>
+</body>
+</html>    .counter {
       font-size: 1.2em;
       margin-top: 30px;
       color: #fff;
