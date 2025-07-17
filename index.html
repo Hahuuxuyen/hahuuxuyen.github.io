@@ -2,39 +2,99 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Hoàng Tử (Luxury) - Dịch Vụ MXH</title>
-  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Đặt Hàng - Hà Hữu Xuyên</title>
   <style>
-    * {
-      box-sizing: border-box;
-    }
     body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #e0f7fa, #e1bee7);
       margin: 0;
-      font-family: 'Quicksand', sans-serif;
-      background: linear-gradient(to right, #e0eafc, #cfdef3);
+      padding: 0;
+      text-align: center;
       color: #333;
     }
     header {
-      background: url('banner.jpg') no-repeat center center/cover;
+      background-color: #6a1b9a;
       color: white;
-      text-align: center;
-      padding: 60px 20px;
-      box-shadow: inset 0 0 0 2000px rgba(0, 0, 0, 0.5);
+      padding: 1rem;
+      font-size: 1.8rem;
     }
-    h1 {
-      font-size: 34px;
-      margin-bottom: 10px;
+    .container {
+      padding: 2rem 1rem;
     }
-    p {
-      font-size: 18px;
+    .item {
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      margin: 1rem auto;
+      max-width: 600px;
+      padding: 1.5rem;
+      transition: transform 0.2s;
     }
-    section {
-      max-width: 960px;
-      margin: auto;
-      padding: 20px;
+    .item:hover {
+      transform: scale(1.02);
     }
-    .box {
+    .item h2 {
+      margin-top: 0;
+      color: #6a1b9a;
+    }
+    .btn {
+      display: inline-block;
+      margin-top: 1rem;
+      padding: 12px 24px;
+      background-color: #8e24aa;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: bold;
+      transition: background-color 0.3s;
+    }
+    .btn:hover {
+      background-color: #6a1b9a;
+    }
+    footer {
+      margin-top: 2rem;
+      font-size: 0.9rem;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+
+  <header>Trang Đặt Hàng Chính Thức</header>
+
+  <div class="container">
+
+    <div class="item">
+      <h2>Sản phẩm 1</h2>
+      <p>Mô tả sản phẩm ngắn gọn tại đây. Đẹp, chất lượng, uy tín.</p>
+      <a class="btn" href="https://www.facebook.com/share/1F9pqKQi13/" target="_blank">Đặt hàng qua Hà Hữu Xuyên</a>
+    </div>
+
+    <div class="item">
+      <h2>Sản phẩm 2</h2>
+      <p>Chi tiết sản phẩm và ưu đãi tốt nhất dành cho bạn.</p>
+      <a class="btn" href="https://www.facebook.com/share/19dsMqErih/" target="_blank">Đặt hàng qua Minh Đức</a>
+    </div>
+
+    <div class="item">
+      <h2>Sản phẩm 3</h2>
+      <p>Chất lượng đảm bảo – Giao hàng tận nơi.</p>
+      <a class="btn" href="https://www.facebook.com/share/1F9pqKQi13/" target="_blank">Đặt hàng qua Hà Hữu Xuyên</a>
+    </div>
+
+    <div class="item">
+      <h2>Sản phẩm 4</h2>
+      <p>Đặt ngay hôm nay – Ưu đãi cực hấp dẫn.</p>
+      <a class="btn" href="https://www.facebook.com/share/19dsMqErih/" target="_blank">Đặt hàng qua Minh Đức</a>
+    </div>
+
+  </div>
+
+  <footer>© 2025 Hà Hữu Xuyên & Minh Đức - Mọi quyền được bảo lưu</footer>
+
+</body>
+</html>    .box {
       background: white;
       border-radius: 12px;
       padding: 20px;
