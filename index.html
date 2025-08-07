@@ -1,99 +1,182 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Hoàng Tử Luxury - Dịch Vụ MXH</title>
-  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <title>💀 Ransomware Simulation 💀</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
   <style>
-    body {
+    html, body {
       margin: 0;
-      font-family: 'Quicksand', sans-serif;
-      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
-      color: white;
-    }
-    header {
+      padding: 0;
+      background-color: black;
+      color: red;
+      font-family: monospace;
       text-align: center;
-      padding: 30px 20px;
-      background: #1e1e2f;
+      touch-action: none;
+      overscroll-behavior: none;
+      height: 100%;
     }
-    header h1 {
-      font-size: 2em;
-      margin-bottom: 10px;
+
+    h1 {
+      font-size: 48px;
+      animation: blink 1s infinite;
     }
-    header p {
-      font-style: italic;
-      color: #ccc;
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.2; }
     }
-    section {
+
+    .container {
       max-width: 800px;
       margin: auto;
       padding: 20px;
+      border: 3px dashed red;
+      background-color: #111;
+      margin-top: 30px;
     }
-    h2 {
-      border-bottom: 2px solid #fff;
-      padding-bottom: 5px;
-      margin-top: 40px;
-    }
-    ul {
-      list-style: none;
-      padding: 0;
-    }
-    li {
-      background: rgba(255,255,255,0.1);
+
+    input, button, textarea {
       padding: 10px;
-      margin-bottom: 8px;
-      border-radius: 8px;
+      font-size: 16px;
+      margin-top: 10px;
+      width: 80%;
     }
-    .warning {
-      background: #ff5050;
-      color: white;
-      padding: 10px;
-      border-radius: 8px;
+
+    button {
+      cursor: pointer;
+    }
+
+    #message, #timer {
       margin-top: 20px;
-      font-weight: bold;
+      font-size: 18px;
+      color: yellow;
     }
-    footer {
-      text-align: center;
-      padding: 20px;
-      font-size: 0.9em;
-      color: #aaa;
+
+    .payinfo {
+      border: 1px dashed yellow;
+      padding: 10px;
+      margin-top: 20px;
+      color: white;
+    }
+
+    .keybox {
+      color: lime;
+      font-size: 24px;
+      margin-top: 15px;
     }
   </style>
 </head>
-<body>
-  <header>
-    <h1>Hoàng Tử (Luxury)</h1>
-    <p>Dịch Vụ Mạng Xã Hội Uy Tín & Chất Lượng</p>
-  </header>
+<body onload="initProtection(); requestFullScreen();">
+  <audio id="bgmusic" autoplay loop>
+    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" type="audio/mpeg">
+  </audio>
 
-  <section>
-    <h2>📘 Facebook</h2>
-    <ul>
-      <li>Theo dõi TCN + Page: <strong>30k / 1000 follow</strong></li>
-      <li>Tăng like bài viết: <strong>20k / 1000 like</strong></li>
-      <li>Tăng like story (icon khác): <strong>15k / 1000 like</strong></li>
-      <li>Tăng mem group: <strong>50k / 1000 thành viên</strong></li>
-      <li>Các dịch vụ mở khóa, tích xanh: <strong>Inbox để thỏa thuận</strong></li>
-    </ul>
+  <div class="container">
+    <h1>💀 HỆ THỐNG BỊ KHÓA 💀</h1>
+    <p>Tất cả dữ liệu đã bị mã hóa.</p>
+    <p>Thời gian còn lại để khôi phục:</p>
+    <div id="timer">02:00</div>
 
-    <h2>🎵 TikTok</h2>
-    <ul>
-      <li>Theo dõi thường: <strong>40k / 1000 follow</strong></li>
-      <li>Theo dõi VIP (người thật bấm tay): <strong>300k / 1000 follow</strong></li>
-      <li>Tăng View: <strong>10k / 1000 view</strong></li>
-      <li>Tăng Tim: <strong>15k / 1000 tim</strong></li>
-      <li>Tăng điểm PK: <strong>10k / 1000 điểm</strong></li>
-    </ul>
+    <input type="text" id="decryptKey" placeholder="Nhập mã giải mã..."><br>
+    <button onclick="verifyKey()">🔓 Giải mã</button>
+    <p id="message"></p>
 
-    <div class="warning">
-      ⚠️ Lưu ý: Các dịch vụ tương tác có thể tụt do nền tảng quét! Không bảo hành các dịch vụ tương tác.
+    <div class="payinfo">
+      <h3>💰 Thông tin chuyển tiền:</h3>
+      <p>💸 Chuyển 500.000đ đến một trong các phương thức sau:</p>
+      <ul style="text-align:left; color:orange;">
+        <li>Momo: <b>0333xxx999</b> - Tên: H.H.Xuyen</li>
+        <li>Ngân hàng: <b>10286868xxx</b> - ACB - H.H.Xuyen</li>
+        <li>Bitcoin: <b>1FfmbHfnpaZjKFvyi1okTjJJusN455paPH</b></li>
+      </ul>
+      <button onclick="revealKey()">💳 Tôi đã thanh toán</button>
+      <div id="unlockKey" class="keybox"></div>
     </div>
-  </section>
 
-  <footer>
-    Cảm ơn mọi người đã ủng hộ 🎩<br/>
-    Liên hệ: <strong>Hoàng Tử</strong> (Inbox để được hỗ trợ 24/7)
-  </footer>
+    <hr>
+    <h3>💬 Chat với Hacker</h3>
+    <textarea id="chatInput" placeholder="Nhập tin nhắn đến hacker..."></textarea><br>
+    <button onclick="chat()">Gửi</button>
+    <div id="chatResponse" style="color: lime; margin-top: 10px;"></div>
+  </div>
+
+  <script>
+    const correctKey = "123456";
+
+    // Đếm ngược
+    let timeLeft = 120;
+    const timer = document.getElementById("timer");
+    const interval = setInterval(() => {
+      let m = Math.floor(timeLeft / 60).toString().padStart(2, '0');
+      let s = (timeLeft % 60).toString().padStart(2, '0');
+      timer.innerText = `${m}:${s}`;
+      timeLeft--;
+      if (timeLeft < 0) {
+        clearInterval(interval);
+        timer.innerText = "HẾT GIỜ!";
+        document.getElementById("message").innerHTML = "💀 Bạn đã mất dữ liệu vĩnh viễn (giả lập)";
+      }
+    }, 1000);
+
+    function verifyKey() {
+      const input = document.getElementById("decryptKey").value.trim();
+      if (input === correctKey) {
+        clearInterval(interval);
+        document.getElementById("message").innerHTML = "✅ Giải mã thành công!";
+        timer.innerText = "--:--";
+      } else {
+        document.getElementById("message").innerHTML = "❌ Mã sai!";
+      }
+    }
+
+    function revealKey() {
+      document.getElementById("unlockKey").innerText = `🔓 Mã giải của bạn: ${correctKey}`;
+    }
+
+    function chat() {
+      const msg = document.getElementById("chatInput").value.trim();
+      const responseEl = document.getElementById("chatResponse");
+
+      if (!msg) {
+        responseEl.innerText = "⚠️ Không được để trống!";
+        return;
+      }
+
+      let response = "🤖 Hacker: ";
+      if (msg.includes("giá")) {
+        response += "500k hoặc 0.002 BTC.";
+      } else if (msg.includes("xin")) {
+        response += "Không có thương lượng. Chuyển tiền!";
+      } else if (msg.includes("help") || msg.includes("giúp")) {
+        response += "Không có trợ giúp. Bạn có 2 phút.";
+      } else {
+        response += "Tôi không quan tâm.";
+      }
+
+      responseEl.innerText = response;
+      document.getElementById("chatInput").value = "";
+    }
+
+    function requestFullScreen() {
+      const el = document.documentElement;
+      if (el.requestFullscreen) el.requestFullscreen();
+      else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+      else if (el.msRequestFullscreen) el.msRequestFullscreen();
+    }
+
+    function initProtection() {
+      // Ngăn reload/tab close
+      window.onbeforeunload = function () {
+        return "Bạn có chắc muốn rời đi? Dữ liệu sẽ mất mãi mãi!";
+      };
+
+      // Ngăn quay lại
+      history.pushState(null, null, location.href);
+      window.onpopstate = function () {
+        history.pushState(null, null, location.href);
+      };
+    }
+  </script>
 </body>
 </html>
