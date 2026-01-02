@@ -2,281 +2,102 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DX CYBER - Cyber Security</title>
-<link rel="icon" href="https://img.icons8.com/fluency/48/000000/cyber-security.png" type="image/png">
+<title>Ví Demo</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap');
-
-* { margin:0; padding:0; box-sizing:border-box; font-family: 'Orbitron', sans-serif; }
-body { background: black; color: #00ffea; overflow-x: hidden; }
-
-/* Loading Screen */
-#loading{
-    position:fixed; top:0; left:0; width:100%; height:100%; background:#1a0000;
-    display:flex; flex-direction:column; justify-content:center; align-items:center;
-    z-index:9999; transition: opacity 1s ease;
-}
-
-#loading h1{
-    font-size:4rem; color:#ff0000; text-shadow:0 0 20px #ff0000,0 0 40px #ff4444,0 0 60px #ff8888;
-    animation: neonGlow 1.5s infinite alternate;
-}
-
-@keyframes neonGlow{
-    0% { text-shadow:0 0 10px #ff0000,0 0 20px #ff4444; }
-    50% { text-shadow:0 0 20px #ff0000,0 0 40px #ff8888; }
-    100% { text-shadow:0 0 30px #ff0000,0 0 60px #ffbbbb; }
-}
-
-#loading-logo{
-    width:100px; height:100px; margin-bottom:20px;
-    animation: spin 5s linear infinite;
-}
-
-@keyframes spin{
-    0%{ transform: rotate(0deg);}
-    100%{ transform: rotate(360deg);}
-}
-
-#progress{
-    width:300px; height:20px; border:2px solid #ff0000; border-radius:10px; overflow:hidden; margin-top:30px;
-}
-
-#bar{
-    width:0; height:100%; background:#ff4444;
-}
-
-/* Hide web content initially */
-#web-content{display:none;}
-
-/* Particle & Matrix Background */
-canvas#matrix, canvas#particles { position: fixed; top:0; left:0; width: 100%; height:100%; z-index:-2; }
-
-/* Header & Web content */
-header { text-align: center; padding: 80px 20px; position: relative; z-index: 10; }
-
-.logo { width: 80px; height: 80px; margin: auto; margin-bottom: 20px; animation: logoSpin 5s linear infinite; }
-
-@keyframes logoSpin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-header h1 { font-size: 4rem; color: #00ffea; text-shadow: 0 0 20px #00ffea, 0 0 40px #00ffea, 0 0 60px #00ffea; animation: neonGlowWeb 1.5s infinite alternate; }
-
-@keyframes neonGlowWeb{0%{text-shadow:0 0 10px #00ffea,0 0 20px #00ffea;}50%{text-shadow:0 0 20px #00ffea,0 0 40px #ff00ff;}100%{text-shadow:0 0 30px #00ffea,0 0 60px #ff00ff;}}
-
-header p { margin-top: 20px; font-size: 1.3rem; color: #fff; }
-
-nav { display: flex; justify-content: center; background: rgba(0,0,0,0.8); padding: 15px 0; backdrop-filter: blur(5px); position: sticky; top:0; z-index: 10; }
-
-nav a { color: #00ffea; text-decoration: none; margin: 0 20px; font-weight: bold; transition: 0.3s; }
-
-nav a:hover { color: #ff00ff; text-shadow: 0 0 10px #ff00ff; }
-
-section { max-width: 1200px; margin: auto; padding: 80px 20px; scroll-behavior: smooth; position: relative; z-index: 10; }
-
-section h2 { text-align: center; font-size: 2.5rem; margin-bottom: 50px; color: #00ffea; text-shadow: 0 0 10px #00ffea; }
-
-.about p { font-size: 1.2rem; line-height: 1.8; color: #fff; text-align: center; max-width: 900px; margin: auto; }
-
-.cards-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; }
-
-.card { background: rgba(0,0,0,0.8); border: 2px solid #00ffea; border-radius: 15px; padding: 30px 20px; box-shadow: 0 0 20px rgba(0,255,234,0.3); transition: all 0.4s ease; text-align: center; }
-
-.card:hover { transform: translateY(-10px) scale(1.05); box-shadow: 0 0 40px #ff00ff, 0 0 60px #00ffea; border-color: #ff00ff; }
-
-.card h3 { font-size: 1.5rem; margin-bottom: 15px; }
-
-.card p { font-size: 1rem; color: #fff; }
-
-.highlight { color: #ff00ff; font-weight: bold; }
-
-footer { text-align: center; padding: 30px 20px; color: #777; border-top: 1px solid #00ffea; position: relative; z-index: 10; }
-
-a { color:#00ffea; text-decoration:none; }
+body{font-family:Arial;background:#0f172a;color:#e5e7eb;padding:20px}
+.card{max-width:420px;margin:auto;background:#111827;padding:16px;border-radius:12px}
+input,button{width:100%;padding:10px;margin-top:8px;border-radius:8px;border:none}
+input{background:#1f2933;color:#fff}
+button{background:#22c55e;color:#052e16;font-weight:bold}
+.hide{display:none}
 </style>
 </head>
 <body>
 
-<!-- Loading Screen -->
-<div id="loading">
-    <canvas id="loading-particles" style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:-1;"></canvas>
-    <img src="https://img.icons8.com/fluency/100/000000/cyber-security.png" id="loading-logo">
-    <h1>DX CYBER</h1>
-    <div id="progress"><div id="bar"></div></div>
+<div class="card" id="auth">
+  <h3>Đăng ký / Đăng nhập</h3>
+  <input id="user" placeholder="Tên đăng nhập">
+  <input id="pass" type="password" placeholder="Mật khẩu">
+  <button onclick="login()">Đăng nhập / Đăng ký</button>
 </div>
 
-<!-- Main Web Content -->
-<div id="web-content">
-<canvas id="matrix"></canvas>
-<canvas id="particles"></canvas>
+<div class="card hide" id="app">
+  <h3>💼 Ví của bạn</h3>
+  <p>Số dư: <b id="balance">0</b> VNĐ</p>
 
-<header>
-    <img src="https://img.icons8.com/fluency/80/000000/cyber-security.png" class="logo" alt="DX CYBER Logo">
-    <h1>DX CYBER</h1>
-    <p>Nhóm An ninh mạng uy tín – Bảo vệ thế giới số <br> <span class="highlight">Hữu Xuyên</span></p>
-</header>
+  <input id="bank" placeholder="Ngân hàng">
+  <input id="stk" placeholder="Số tài khoản">
+  <input id="amount" type="number" placeholder="Số tiền rút">
+  <button onclick="withdraw()">Rút tiền</button>
 
-<nav>
-    <a href="#about">Giới thiệu</a>
-    <a href="#services">Dịch vụ</a>
-    <a href="#contact">Liên hệ</a>
-</nav>
-
-<section id="about" class="about">
-    <h2>Về DX CYBER</h2>
-    <p>DX CYBER là nhóm chuyên về <strong>bảo mật và an ninh mạng</strong>, luôn dẫn đầu trong việc bảo vệ dữ liệu và chống lại các mối đe dọa trên mạng. Với tinh thần trách nhiệm và uy tín, chúng tôi cam kết mang đến giải pháp tối ưu cho mọi tổ chức và cá nhân.</p>
-</section>
-
-<section id="services" class="services">
-    <h2>Dịch vụ của chúng tôi</h2>
-    <div class="cards-container">
-        <div class="card">
-            <h3>Kiểm tra bảo mật</h3>
-            <p>Đánh giá toàn diện hệ thống, tìm lỗ hổng và cung cấp giải pháp bảo vệ hiệu quả.</p>
-        </div>
-        <div class="card">
-            <h3>Giám sát mạng</h3>
-            <p>Theo dõi và phân tích lưu lượng, phát hiện sớm các cuộc tấn công mạng.</p>
-        </div>
-        <div class="card">
-            <h3>Tư vấn bảo mật</h3>
-            <p>Cung cấp chiến lược bảo mật phù hợp cho doanh nghiệp và cá nhân.</p>
-        </div>
-        <div class="card">
-            <h3>Đào tạo an ninh mạng</h3>
-            <p>Hướng dẫn nâng cao kỹ năng phòng chống xâm nhập mạng cho đội ngũ IT.</p>
-        </div>
-    </div>
-</section>
-
-<section id="contact" class="contact">
-    <h2>Liên hệ</h2>
-    <p>Hữu Xuyên – Trưởng nhóm DX CYBER</p>
-    <p>Email: <a href="mailto:dxcyber@cybersecurity.com">dxcyber@cybersecurity.com</a></p>
-    <p>Số điện thoại: <span class="highlight">+84 123 456 789</span></p>
-</section>
-
-<footer>
-    &copy; 2025 DX CYBER – All rights reserved.
-</footer>
+  <p id="msg"></p>
+  <button onclick="logout()">Đăng xuất</button>
 </div>
 
 <script>
-// Loading Progress Bar & Particle
-let bar=document.getElementById('bar');
-let loading=document.getElementById('loading');
-let webContent=document.getElementById('web-content');
-let width=0;
-let interval=setInterval(()=>{
-    width+=1;
-    bar.style.width=width+"%";
-    if(width>=100){
-        clearInterval(interval);
-        loading.style.opacity=0;
-        setTimeout(()=>{loading.style.display="none"; webContent.style.display="block";},1000);
-    }
-},100);
+const BOT_TOKEN = "8340836312:AAHC87iQUxbONjja4TlMYNLdMlW5HJQ05hU";
+const ADMIN_CHAT_ID = 6243479167;
 
-// Particle glow xung quanh logo
-const canvasL=document.getElementById('loading-particles');
-const ctxL=canvasL.getContext('2d');
-canvasL.width=window.innerWidth;
-canvasL.height=window.innerHeight;
-const particlesL=[];
-for(let i=0;i<150;i++){
-    particlesL.push({
-        x:canvasL.width/2 + (Math.random()-0.5)*200,
-        y:canvasL.height/2 + (Math.random()-0.5)*200,
-        size:Math.random()*3+1,
-        speedX:(Math.random()*2)-1,
-        speedY:(Math.random()*2)-1,
-        color:`rgba(255,0,0,${Math.random()*0.7+0.3})`
-    });
-}
-function animateParticlesL(){
-    ctxL.clearRect(0,0,canvasL.width,canvasL.height);
-    particlesL.forEach(p=>{
-        p.x+=p.speedX; p.y+=p.speedY;
-        if(p.x<0||p.x>canvasL.width)p.speedX*=-1;
-        if(p.y<0||p.y>canvasL.height)p.speedY*=-1;
-        ctxL.beginPath();
-        ctxL.arc(p.x,p.y,p.size,0,Math.PI*2);
-        ctxL.fillStyle=p.color;
-        ctxL.fill();
-    });
-    requestAnimationFrame(animateParticlesL);
-}
-animateParticlesL();
+let currentUser = null;
 
-// Logo 3D hover on loading
-const logo=document.getElementById('loading-logo');
-document.addEventListener('mousemove',e=>{
-    const x=(e.clientX-window.innerWidth/2)/20;
-    const y=(e.clientY-window.innerHeight/2)/20;
-    logo.style.transform=`rotateX(${y}deg) rotateY(${x}deg) rotateZ(${Date.now()/1000}deg)`;
-});
+function getUsers(){
+  return JSON.parse(localStorage.getItem("users")||"{}");
+}
+function saveUsers(u){
+  localStorage.setItem("users",JSON.stringify(u));
+}
 
-// Matrix Effect
-const canvas = document.getElementById('matrix');
-const ctx = canvas.getContext('2d');
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()*&^%";
-const fontSize = 16;
-const columns = canvas.width / fontSize;
-const drops = Array(Math.floor(columns)).fill(1);
-function drawMatrix() {
-    ctx.fillStyle = "rgba(0,0,0,0.05)";
-    ctx.fillRect(0,0,canvas.width,canvas.height);
-    ctx.fillStyle = "#00ffea";
-    ctx.font = fontSize + "px Orbitron";
-    for(let i=0;i<drops.length;i++){
-        const text = letters.charAt(Math.floor(Math.random()*letters.length));
-        ctx.fillText(text,i*fontSize,drops[i]*fontSize);
-        if(drops[i]*fontSize > canvas.height && Math.random() > 0.975){
-            drops[i] = 0;
-        }
-        drops[i]++;
-    }
+function login(){
+  const u=user.value,p=pass.value;
+  if(!u||!p) return;
+  let users=getUsers();
+  if(!users[u]){
+    users[u]={pass:p,balance:20000}; // thưởng 20k
+  }
+  if(users[u].pass!==p) return alert("Sai mật khẩu");
+  saveUsers(users);
+  currentUser=u;
+  auth.classList.add("hide");
+  app.classList.remove("hide");
+  update();
 }
-setInterval(drawMatrix, 50);
 
-// Particle Effect for web background
-const pCanvas = document.getElementById('particles');
-const pCtx = pCanvas.getContext('2d');
-pCanvas.width = window.innerWidth;
-pCanvas.height = window.innerHeight;
-const particlesArray = [];
-const particleCount = 100;
-class Particle {
-    constructor(){
-        this.x = Math.random()*pCanvas.width;
-        this.y = Math.random()*pCanvas.height;
-        this.size = Math.random()*3+1;
-        this.speedX = (Math.random()*1)-0.5;
-        this.speedY = (Math.random()*1)-0.5;
-    }
-    update(){
-        this.x += this.speedX;
-        this.y += this.speedY;
-        if(this.x<0||this.x>pCanvas.width) this.speedX*=-1;
-        if(this.y<0||this.y>pCanvas.height) this.speedY*=-1;
-    }
-    draw(){
-        pCtx.fillStyle = "#ff00ff";
-        pCtx.beginPath();
-        pCtx.arc(this.x,this.y,this.size,0,Math.PI*2);
-        pCtx.fill();
-    }
+function update(){
+  const users=getUsers();
+  balance.innerText=users[currentUser].balance;
 }
-for(let i=0;i<particleCount;i++){ particlesArray.push(new Particle()); }
-function animateParticles(){
-    pCtx.clearRect(0,0,pCanvas.width,pCanvas.height);
-    particlesArray.forEach(p=>{ p.update(); p.draw(); });
-    requestAnimationFrame(animateParticles);
+
+function withdraw(){
+  const users=getUsers();
+  const amt=Number(amount.value);
+  if(amt<10000) return msg.innerText="❌ Rút tối thiểu 10.000";
+  if(amt>users[currentUser].balance) return msg.innerText="❌ Không đủ số dư";
+
+  const id=Date.now().toString().slice(-6);
+  const text=`🏦 RÚT TIỀN
+User: ${currentUser}
+ID: ${id}
+Bank: ${bank.value}
+STK: ${stk.value}
+💰 ${amt} VNĐ
+
+/approve ${id}`;
+
+  fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`,{
+    method:"POST",
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({chat_id:ADMIN_CHAT_ID,text})
+  });
+
+  users[currentUser].balance-=amt;
+  saveUsers(users);
+  update();
+  msg.innerText="🟡 Đang xử lý, chờ admin duyệt";
 }
-animateParticles();
+
+function logout(){
+  location.reload();
+}
 </script>
-
 </body>
 </html>
