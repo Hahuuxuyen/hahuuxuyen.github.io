@@ -1,103 +1,109 @@
-<!DOCTYPE html>
-<html lang="vi">
+<!DOCTYPE html><html lang="vi">
 <head>
-<meta charset="UTF-8">
-<title>Ví Demo</title>
-<style>
-body{font-family:Arial;background:#0f172a;color:#e5e7eb;padding:20px}
-.card{max-width:420px;margin:auto;background:#111827;padding:16px;border-radius:12px}
-input,button{width:100%;padding:10px;margin-top:8px;border-radius:8px;border:none}
-input{background:#1f2933;color:#fff}
-button{background:#22c55e;color:#052e16;font-weight:bold}
-.hide{display:none}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gọi Món Online</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    *{box-sizing:border-box}
+    body{font-family:Inter,Arial,sans-serif;background:linear-gradient(135deg,#ffecd2,#fcb69f);min-height:100vh;margin:0;padding:20px}
+    .card{max-width:520px;margin:auto;background:#fff;border-radius:18px;box-shadow:0 20px 40px rgba(0,0,0,.15);overflow:hidden}
+    .header{background:linear-gradient(135deg,#ff7a18,#ffb347);color:#fff;padding:18px 22px}
+    .header h1{margin:0;font-size:22px}
+    .content{padding:20px}
+    label{font-size:13px;color:#555}
+    input,textarea,button{width:100%;padding:12px;margin:8px 0;border-radius:10px;border:1px solid #ddd;font-size:14px}
+    textarea{resize:none}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .foods .food-item{display:grid;grid-template-columns:1fr 90px 36px;gap:8px;margin-bottom:8px}
+    .btn{background:#ff7a18;color:#fff;border:none;font-weight:700;cursor:pointer}
+    .btn.secondary{background:#eee;color:#333}
+    .btn.small{padding:8px}
+    .footer{padding:14px 20px;background:#fafafa;border-top:1px solid #eee}
+    .msg{margin-top:8px;font-weight:600}
+    .ok{color:#1a7f37}
+    .err{color:#c92a2a}
+  </style>
 </head>
 <body>
+  <div class="card">
+    <div class="header">
+      <h1>🍔 Gọi Món Online</h1>
+      <div>Đặt món nhanh – gửi về Telegram</div>
+    </div><div class="content">
+  <label>Tên khách hàng</label>
+  <input id="name" placeholder="Nhập tên" />
 
-<div class="card" id="auth">
-  <h3>Đăng ký / Đăng nhập</h3>
-  <input id="user" placeholder="Tên đăng nhập">
-  <input id="pass" type="password" placeholder="Mật khẩu">
-  <button onclick="login()">Đăng nhập / Đăng ký</button>
+  <div class="row">
+    <div>
+      <label>Số điện thoại</label>
+      <input id="phone" placeholder="09xxxxxxxx" />
+    </div>
+    <div>
+      <label>Ghi chú</label>
+      <input id="note" placeholder="Ít đá, cay..." />
+    </div>
+  </div>
+
+  <label>Địa chỉ giao hàng</label>
+  <textarea id="address" rows="2" placeholder="Số nhà, đường, phường..."></textarea>
+
+  <label>Món ăn</label>
+  <div class="foods" id="foods"></div>
+  <button type="button" class="btn secondary" onclick="addFood()">➕ Thêm món</button>
+
+  <button class="btn" onclick="sendOrder()">🚀 Gửi đơn</button>
+  <div id="msg" class="msg"></div>
 </div>
 
-<div class="card hide" id="app">
-  <h3>💼 Ví của bạn</h3>
-  <p>Số dư: <b id="balance">0</b> VNĐ</p>
+<div class="footer">© Gọi Món</div>
 
-  <input id="bank" placeholder="Ngân hàng">
-  <input id="stk" placeholder="Số tài khoản">
-  <input id="amount" type="number" placeholder="Số tiền rút">
-  <button onclick="withdraw()">Rút tiền</button>
-
-  <p id="msg"></p>
-  <button onclick="logout()">Đăng xuất</button>
-</div>
-
-<script>
+  </div><script>
+// ĐÃ GẮN TOKEN BOT THEO THÔNG TIN BẠN ĐÃ LƯU TRƯỚC ĐÓ
 const BOT_TOKEN = "8340836312:AAHC87iQUxbONjja4TlMYNLdMlW5HJQ05hU";
-const ADMIN_CHAT_ID = 6243479167;
+const CHAT_ID = "YOUR_CHAT_ID"; // thay chat id của bạn
 
-let currentUser = null;
-
-function getUsers(){
-  return JSON.parse(localStorage.getItem("users")||"{}");
+let foodCount = 0;
+function addFood(){
+  foodCount++;
+  const div = document.createElement('div');
+  div.className = 'food-item';
+  div.innerHTML = `
+    <input placeholder="Tên món" id="food_${foodCount}" />
+    <input placeholder="SL" id="qty_${foodCount}" />
+    <button class="btn small secondary" onclick="this.parentNode.remove()">✖</button>
+  `;
+  document.getElementById('foods').appendChild(div);
 }
-function saveUsers(u){
-  localStorage.setItem("users",JSON.stringify(u));
-}
+addFood();
 
-function login(){
-  const u=user.value,p=pass.value;
-  if(!u||!p) return;
-  let users=getUsers();
-  if(!users[u]){
-    users[u]={pass:p,balance:20000}; // thưởng 20k
+function sendOrder(){
+  const name = document.getElementById('name').value.trim();
+  const phone = document.getElementById('phone').value.trim();
+  const address = document.getElementById('address').value.trim();
+  const note = document.getElementById('note').value.trim();
+
+  let food = '';
+  for(let i=1;i<=foodCount;i++){
+    const f = document.getElementById(`food_${i}`)?.value;
+    const q = document.getElementById(`qty_${i}`)?.value;
+    if(f && q) food += `- ${f} x ${q}\n`;
   }
-  if(users[u].pass!==p) return alert("Sai mật khẩu");
-  saveUsers(users);
-  currentUser=u;
-  auth.classList.add("hide");
-  app.classList.remove("hide");
-  update();
-}
 
-function update(){
-  const users=getUsers();
-  balance.innerText=users[currentUser].balance;
-}
+  if(!name || !phone || !address || !food){
+    msg('❌ Vui lòng nhập đủ thông tin','err');
+    return;
+  }
 
-function withdraw(){
-  const users=getUsers();
-  const amt=Number(amount.value);
-  if(amt<10000) return msg.innerText="❌ Rút tối thiểu 10.000";
-  if(amt>users[currentUser].balance) return msg.innerText="❌ Không đủ số dư";
-
-  const id=Date.now().toString().slice(-6);
-  const text=`🏦 RÚT TIỀN
-User: ${currentUser}
-ID: ${id}
-Bank: ${bank.value}
-STK: ${stk.value}
-💰 ${amt} VNĐ
-
-/approve ${id}`;
+  const text = `📦 ĐƠN GỌI MỚI\n\n👤 ${name}\n📞 ${phone}\n🏠 ${address}\n📝 ${note || 'Không'}\n\n🍽 Món:\n${food}`;
 
   fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`,{
-    method:"POST",
-    headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({chat_id:ADMIN_CHAT_ID,text})
-  });
-
-  users[currentUser].balance-=amt;
-  saveUsers(users);
-  update();
-  msg.innerText="🟡 Đang xử lý, chờ admin duyệt";
+    method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({chat_id:CHAT_ID,text})
+  })
+  .then(r=>r.json()).then(()=>msg('✅ Gửi đơn thành công','ok'))
+  .catch(()=>msg('❌ Lỗi gửi đơn','err'));
 }
-
-function logout(){
-  location.reload();
-}
-</script>
-</body>
+function msg(t,c){const m=document.getElementById('msg');m.textContent=t;m.className='msg '+c}
+</script></body>
 </html>
