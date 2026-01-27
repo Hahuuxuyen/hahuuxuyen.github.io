@@ -9,7 +9,6 @@
 :root{
   --neon:#00f5ff;
   --bg:#020617;
-  --card:#020617;
   --text:#e5e7eb;
 }
 *{box-sizing:border-box}
@@ -33,91 +32,43 @@ body{
   padding:22px;
   box-shadow:0 0 30px rgba(0,245,255,.15);
 }
-h1{
-  text-align:center;
-  margin:0 0 6px;
-  color:var(--neon);
-}
-.sub{
-  text-align:center;
-  font-size:12px;
-  opacity:.75;
-  margin-bottom:14px;
-}
-label{
-  font-size:12px;
-  opacity:.8;
-}
+h1{text-align:center;color:var(--neon);margin:0}
+.sub{text-align:center;font-size:12px;opacity:.7;margin-bottom:14px}
 input,textarea,button{
-  width:100%;
-  margin-top:8px;
-  padding:12px;
-  border-radius:12px;
-  border:none;
-  outline:none;
-  font-size:14px;
+  width:100%;margin-top:8px;padding:12px;
+  border-radius:12px;border:none;outline:none;
 }
 input,textarea{
-  background:#020617;
-  color:#22c55e;
-  border:1px solid #1e293b;
-}
-input:focus,textarea:focus{
-  border-color:var(--neon);
+  background:#020617;color:#22c55e;border:1px solid #1e293b;
 }
 button{
   margin-top:14px;
   background:linear-gradient(135deg,#00f5ff,#7c3aed);
-  color:#000;
-  font-weight:700;
-  cursor:pointer;
+  color:#000;font-weight:700;
 }
-button:disabled{
-  opacity:.45;
-  cursor:not-allowed;
-}
-.file-info{
-  font-size:12px;
-  margin-top:4px;
-  color:#7fffd4;
-}
-.log{
-  margin-top:12px;
-  height:90px;
-}
-.footer{
-  margin-top:14px;
-  font-size:11px;
-  text-align:center;
-  opacity:.7;
-}
-.footer a{color:#7fffd4;text-decoration:none}
-.download{
-  display:none;
-}
+.file-info{font-size:12px;color:#7fffd4}
+.log{height:90px;margin-top:12px}
+.download{display:none}
+.footer{margin-top:14px;font-size:11px;text-align:center;opacity:.7}
+.footer a{color:#7fffd4}
 </style>
 </head>
 
 <body>
-
 <div class="card">
   <h1>🔐 Code Protector</h1>
-  <div class="sub">Anti-Reverse • Level 5 • Mobile Friendly</div>
+  <div class="sub">Anti-Reverse • Chunk Encode • No Freeze</div>
 
-  <label>📂 Chọn file</label>
   <input type="file" id="file">
   <div class="file-info" id="fname">Chưa chọn file</div>
 
-  <label>🔑 Mật khẩu</label>
-  <input id="pw" placeholder="Nhập mật khẩu bảo vệ">
+  <input id="pw" placeholder="🔑 Mật khẩu">
+  <input id="owner" placeholder="© Hà Hữu Xuyên">
 
-  <label>© Bản quyền</label>
-  <input id="owner" placeholder="Hà Hữu Xuyên">
+  <button onclick="encrypt()">1️⃣ MÃ HÓA</button>
+  <button id="downloadBtn" class="download">⬇️ TẢI FILE</button>
 
-  <button onclick="encrypt()">1️⃣ MÃ HÓA FILE</button>
-  <button class="download" id="downloadBtn">⬇️ TẢI FILE ĐÃ MÃ HÓA</button>
-
-  <textarea class="log" id="log" readonly placeholder="Log..."></textarea>
+  <textarea id="log" class="log" readonly placeholder="Log..."></textarea>
 
   <div class="footer">
     © Hà Hữu Xuyên<br>
@@ -127,11 +78,11 @@ button:disabled{
 </div>
 
 <script>
-let blobURL=null;
 const fileInput=document.getElementById("file");
 const fname=document.getElementById("fname");
 const logBox=document.getElementById("log");
 const dlBtn=document.getElementById("downloadBtn");
+let blobURL=null;
 
 fileInput.onchange=()=>{
   fname.textContent=fileInput.files[0]
@@ -144,12 +95,13 @@ function log(t){
   logBox.scrollTop=logBox.scrollHeight;
 }
 
-function xorEnc(str,key){
+// 🔥 XOR CHUNK
+function xorChunk(str,key,start,len){
   let out=[];
-  for(let i=0;i<str.length;i++){
+  for(let i=start;i<Math.min(start+len,str.length);i++){
     out.push(str.charCodeAt(i)^key.charCodeAt(i%key.length));
   }
-  return btoa(String.fromCharCode(...out));
+  return out;
 }
 
 function encrypt(){
@@ -159,21 +111,35 @@ function encrypt(){
   if(!pw) return alert("Chưa nhập mật khẩu");
   const owner=document.getElementById("owner").value||"Hà Hữu Xuyên";
 
-  log("🔄 Đang mã hóa...");
+  log("🔄 Đang đọc file...");
   dlBtn.style.display="none";
 
-  // 👉 CHỐNG TREO UI
-  setTimeout(()=>{
-    const reader=new FileReader();
-    reader.onload=()=>{
-      const enc=xorEnc(reader.result,pw);
+  const reader=new FileReader();
+  reader.onload=()=>{
+    const src=reader.result;
+    let pos=0;
+    const CHUNK=8192;
+    let result=[];
 
-const out=`# === PROTECTED FILE ===
+    log("🔐 Bắt đầu mã hóa...");
+
+    function step(){
+      if(pos<src.length){
+        result.push(...xorChunk(src,pw,pos,CHUNK));
+        pos+=CHUNK;
+        log("⏳ "+Math.min(100,Math.floor(pos/src.length*100))+"%");
+        setTimeout(step,0); // ⭐ NHẢ UI
+      }else{
+        finish();
+      }
+    }
+
+    function finish(){
+      const enc=btoa(String.fromCharCode(...result));
+      const out=`# === PROTECTED FILE ===
 # © ${owner}
 
 import base64,hashlib,sys
-
-OWNER="${owner}"
 DATA="${enc}"
 
 pw=input("🔐 Nhap mat khau: ")
@@ -185,7 +151,6 @@ raw=base64.b64decode(DATA)
 real=bytes(raw[i]^pw.encode()[i%len(pw)] for i in range(len(raw)))
 exec(real.decode())
 `;
-
       const blob=new Blob([out],{type:"text/plain"});
       blobURL=URL.createObjectURL(blob);
 
@@ -197,12 +162,13 @@ exec(real.decode())
       };
 
       dlBtn.style.display="block";
-      log("✅ Mã hóa xong. Bấm TẢI FILE.");
-    };
-    reader.readAsText(f);
-  }, 50); // ⭐ dòng cứu treo
+      log("✅ Hoàn tất. Bấm TẢI FILE.");
+    }
+
+    step();
+  };
+  reader.readAsText(f);
 }
 </script>
-
 </body>
 </html>
