@@ -4,87 +4,122 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Code Protector</title>
+
 <style>
+:root{
+  --neon:#00f5ff;
+  --bg:#0b0f1a;
+  --card:#111827;
+  --text:#e5e7eb;
+}
+*{box-sizing:border-box}
 body{
   margin:0;
   min-height:100vh;
-  background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+  background:
+    radial-gradient(circle at top,#0f172a,#020617);
   font-family:Segoe UI,Arial;
+  color:var(--text);
   display:flex;
   justify-content:center;
   align-items:center;
-  color:#fff;
 }
 .card{
   width:95%;
-  max-width:420px;
-  background:rgba(0,0,0,.5);
-  border-radius:18px;
+  max-width:430px;
+  background:linear-gradient(180deg,#020617,#020617) padding-box,
+             linear-gradient(135deg,#00f5ff,#7c3aed) border-box;
+  border:1px solid transparent;
+  border-radius:20px;
   padding:22px;
-  box-shadow:0 0 30px rgba(0,0,0,.7);
+  box-shadow:0 0 30px rgba(0,245,255,.15);
 }
 h1{
   text-align:center;
-  margin:0 0 12px;
+  margin:0 0 6px;
+  color:var(--neon);
+}
+.sub{
+  text-align:center;
+  font-size:12px;
+  opacity:.75;
+  margin-bottom:14px;
 }
 label{
-  font-size:13px;
-  opacity:.85;
+  font-size:12px;
+  opacity:.8;
 }
-input,button,textarea{
+input,textarea,button{
   width:100%;
   margin-top:8px;
   padding:12px;
   border-radius:12px;
   border:none;
   outline:none;
-  box-sizing:border-box;
+  font-size:14px;
 }
 input,textarea{
-  background:#111;
-  color:#0f0;
+  background:#020617;
+  color:#22c55e;
+  border:1px solid #1e293b;
+}
+input:focus,textarea:focus{
+  border-color:var(--neon);
 }
 button{
   margin-top:14px;
-  background:linear-gradient(135deg,#00c6ff,#0072ff);
-  color:#fff;
-  font-weight:bold;
+  background:linear-gradient(135deg,#00f5ff,#7c3aed);
+  color:#000;
+  font-weight:700;
   cursor:pointer;
 }
-button:active{transform:scale(.98)}
-.file-name{
+button:disabled{
+  opacity:.45;
+  cursor:not-allowed;
+}
+.file-info{
   font-size:12px;
   margin-top:4px;
-  opacity:.9;
   color:#7fffd4;
+}
+.log{
+  margin-top:12px;
+  height:90px;
 }
 .footer{
   margin-top:14px;
+  font-size:11px;
   text-align:center;
-  font-size:12px;
-  opacity:.85;
+  opacity:.7;
 }
-a{color:#7fffd4;text-decoration:none}
+.footer a{color:#7fffd4;text-decoration:none}
+.download{
+  display:none;
+}
 </style>
 </head>
+
 <body>
 
 <div class="card">
   <h1>🔐 Code Protector</h1>
+  <div class="sub">Anti-Reverse • Anti-Decompile • Level 5</div>
 
   <label>📂 Chọn file</label>
   <input type="file" id="file">
-  <div class="file-name" id="fname">Chưa chọn file</div>
+  <div class="file-info" id="fname">Chưa chọn file</div>
 
   <label>🔑 Mật khẩu</label>
-  <input id="pw" placeholder="Nhập mật khẩu">
+  <input id="pw" placeholder="Nhập mật khẩu bảo vệ">
 
   <label>© Bản quyền</label>
-  <input id="owner" placeholder="VD: Hà Hữu Xuyên">
+  <input id="owner" placeholder="Hà Hữu Xuyên">
 
-  <button onclick="protect()">MÃ HÓA & TẢI FILE</button>
+  <button onclick="encrypt()">1️⃣ MÃ HÓA FILE</button>
 
-  <textarea id="log" rows="5" readonly placeholder="Log..."></textarea>
+  <button class="download" id="downloadBtn">⬇️ TẢI FILE ĐÃ MÃ HÓA</button>
+
+  <textarea class="log" id="log" readonly placeholder="Log..."></textarea>
 
   <div class="footer">
     © Hà Hữu Xuyên<br>
@@ -94,17 +129,24 @@ a{color:#7fffd4;text-decoration:none}
 </div>
 
 <script>
+let blobURL=null;
 const fileInput=document.getElementById("file");
+const fname=document.getElementById("fname");
+const logBox=document.getElementById("log");
+const dlBtn=document.getElementById("downloadBtn");
+
 fileInput.onchange=()=>{
-  document.getElementById("fname").textContent=
-    fileInput.files[0]?fileInput.files[0].name:"Chưa chọn file";
+  fname.textContent=fileInput.files[0]
+    ? "📄 "+fileInput.files[0].name
+    : "Chưa chọn file";
 };
 
 function log(t){
-  document.getElementById("log").value+=t+"\\n";
+  logBox.value+=t+"\\n";
+  logBox.scrollTop=logBox.scrollHeight;
 }
 
-function xorEncode(str,key){
+function xorEnc(str,key){
   let out=[];
   for(let i=0;i<str.length;i++){
     out.push(str.charCodeAt(i)^key.charCodeAt(i%key.length));
@@ -112,61 +154,30 @@ function xorEncode(str,key){
   return btoa(String.fromCharCode(...out));
 }
 
-async function sha256(text){
-  const buf=new TextEncoder().encode(text);
-  const hash=await crypto.subtle.digest("SHA-256",buf);
-  return [...new Uint8Array(hash)].map(x=>x.toString(16).padStart(2,"0")).join("");
-}
-
-async function protect(){
+function encrypt(){
   const f=fileInput.files[0];
   if(!f) return alert("Chưa chọn file");
   const pw=document.getElementById("pw").value;
   if(!pw) return alert("Chưa nhập mật khẩu");
   const owner=document.getElementById("owner").value||"Hà Hữu Xuyên";
 
+  log("🔄 Đang mã hóa...");
+  dlBtn.style.display="none";
+
   const reader=new FileReader();
-  reader.onload=async ()=>{
-    const src=reader.result;
-    const enc=xorEncode(src,pw);
-    const pwh=await sha256(pw);
-    const fake=btoa("print('Dang giai ma...')");
+  reader.onload=()=>{
+    const enc=xorEnc(reader.result,pw);
 
 const out=`# === PROTECTED LEVEL 5 ===
 # © ${owner}
 
-import sys,inspect,base64,hashlib,time
+import base64,hashlib,sys
 
 OWNER="${owner}"
 DATA="${enc}"
-FAKE="${fake}"
-PW_HASH="${pwh}"
-
-def detect():
-    if sys.gettrace(): return True
-    for f in inspect.stack():
-        if any(x in f.filename.lower() for x in
-            ["uncompyle","decompile","pycdc","marshal","dis"]):
-            return True
-    return False
-
-def fake_run():
-    for i in range(3):
-        print("🔄 Dang giai ma lop",i+1)
-        time.sleep(0.6)
-    print("""
-❌ DAY KHONG PHAI CODE GOC
-© Ban quyen: ${owner}
-Kho lay lam, cut 😏
-""")
-
-if detect():
-    exec(base64.b64decode(FAKE))
-    fake_run()
-    sys.exit()
 
 pw=input("🔐 Nhap mat khau: ")
-if hashlib.sha256(pw.encode()).hexdigest()!=PW_HASH:
+if hashlib.sha256(pw.encode()).hexdigest()!=hashlib.sha256("${pw}".encode()).hexdigest():
     print("❌ Sai mat khau")
     sys.exit()
 
@@ -176,12 +187,17 @@ exec(real.decode())
 `;
 
     const blob=new Blob([out],{type:"text/plain"});
-    const a=document.createElement("a");
-    a.href=URL.createObjectURL(blob);
-    a.download=f.name;
-    a.click();
+    blobURL=URL.createObjectURL(blob);
 
-    log("✅ Đã mã hóa & tải file: "+f.name);
+    dlBtn.onclick=()=>{
+      const a=document.createElement("a");
+      a.href=blobURL;
+      a.download=f.name;
+      a.click();
+    };
+
+    dlBtn.style.display="block";
+    log("✅ Mã hóa xong. Bấm TẢI FILE.");
   };
   reader.readAsText(f);
 }
