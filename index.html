@@ -8,16 +8,15 @@
 <style>
 :root{
   --neon:#00f5ff;
-  --bg:#0b0f1a;
-  --card:#111827;
+  --bg:#020617;
+  --card:#020617;
   --text:#e5e7eb;
 }
 *{box-sizing:border-box}
 body{
   margin:0;
   min-height:100vh;
-  background:
-    radial-gradient(circle at top,#0f172a,#020617);
+  background:radial-gradient(circle at top,#0f172a,#020617);
   font-family:Segoe UI,Arial;
   color:var(--text);
   display:flex;
@@ -103,7 +102,7 @@ button:disabled{
 
 <div class="card">
   <h1>🔐 Code Protector</h1>
-  <div class="sub">Anti-Reverse • Anti-Decompile • Level 5</div>
+  <div class="sub">Anti-Reverse • Level 5 • Mobile Friendly</div>
 
   <label>📂 Chọn file</label>
   <input type="file" id="file">
@@ -116,7 +115,6 @@ button:disabled{
   <input id="owner" placeholder="Hà Hữu Xuyên">
 
   <button onclick="encrypt()">1️⃣ MÃ HÓA FILE</button>
-
   <button class="download" id="downloadBtn">⬇️ TẢI FILE ĐÃ MÃ HÓA</button>
 
   <textarea class="log" id="log" readonly placeholder="Log..."></textarea>
@@ -164,11 +162,13 @@ function encrypt(){
   log("🔄 Đang mã hóa...");
   dlBtn.style.display="none";
 
-  const reader=new FileReader();
-  reader.onload=()=>{
-    const enc=xorEnc(reader.result,pw);
+  // 👉 CHỐNG TREO UI
+  setTimeout(()=>{
+    const reader=new FileReader();
+    reader.onload=()=>{
+      const enc=xorEnc(reader.result,pw);
 
-const out=`# === PROTECTED LEVEL 5 ===
+const out=`# === PROTECTED FILE ===
 # © ${owner}
 
 import base64,hashlib,sys
@@ -186,20 +186,21 @@ real=bytes(raw[i]^pw.encode()[i%len(pw)] for i in range(len(raw)))
 exec(real.decode())
 `;
 
-    const blob=new Blob([out],{type:"text/plain"});
-    blobURL=URL.createObjectURL(blob);
+      const blob=new Blob([out],{type:"text/plain"});
+      blobURL=URL.createObjectURL(blob);
 
-    dlBtn.onclick=()=>{
-      const a=document.createElement("a");
-      a.href=blobURL;
-      a.download=f.name;
-      a.click();
+      dlBtn.onclick=()=>{
+        const a=document.createElement("a");
+        a.href=blobURL;
+        a.download=f.name;
+        a.click();
+      };
+
+      dlBtn.style.display="block";
+      log("✅ Mã hóa xong. Bấm TẢI FILE.");
     };
-
-    dlBtn.style.display="block";
-    log("✅ Mã hóa xong. Bấm TẢI FILE.");
-  };
-  reader.readAsText(f);
+    reader.readAsText(f);
+  }, 50); // ⭐ dòng cứu treo
 }
 </script>
 
