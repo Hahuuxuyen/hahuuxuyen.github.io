@@ -2,172 +2,166 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Code Protector</title>
-
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <style>
-:root{
-  --neon:#00f5ff;
-  --bg:#020617;
-  --text:#e5e7eb;
-}
-*{box-sizing:border-box}
 body{
-  margin:0;
-  min-height:100vh;
-  background:radial-gradient(circle at top,#0f172a,#020617);
-  font-family:Segoe UI,Arial;
-  color:var(--text);
+  background:linear-gradient(135deg,#050b1a,#0b2a3a);
+  font-family:system-ui;
+  color:#fff;
   display:flex;
   justify-content:center;
-  align-items:center;
+  padding:20px
 }
-.card{
-  width:95%;
-  max-width:430px;
-  background:linear-gradient(180deg,#020617,#020617) padding-box,
-             linear-gradient(135deg,#00f5ff,#7c3aed) border-box;
-  border:1px solid transparent;
-  border-radius:20px;
-  padding:22px;
-  box-shadow:0 0 30px rgba(0,245,255,.15);
+.box{
+  width:100%;
+  max-width:420px;
+  background:#0a1428;
+  border-radius:18px;
+  padding:20px;
+  box-shadow:0 0 30px #00eaff55
 }
-h1{text-align:center;color:var(--neon);margin:0}
-.sub{text-align:center;font-size:12px;opacity:.7;margin-bottom:14px}
-input,textarea,button{
-  width:100%;margin-top:8px;padding:12px;
-  border-radius:12px;border:none;outline:none;
+h1{
+  text-align:center;
+  color:#00eaff;
+  margin-bottom:5px
 }
-input,textarea{
-  background:#020617;color:#22c55e;border:1px solid #1e293b;
+.sub{
+  text-align:center;
+  opacity:.8;
+  font-size:13px;
+  margin-bottom:15px
+}
+input,button{
+  width:100%;
+  margin:8px 0;
+  padding:12px;
+  border-radius:10px;
+  border:none;
+  font-size:15px
+}
+input{
+  background:#101c33;
+  color:#fff
 }
 button{
-  margin-top:14px;
-  background:linear-gradient(135deg,#00f5ff,#7c3aed);
-  color:#000;font-weight:700;
+  background:linear-gradient(90deg,#00eaff,#7b5cff);
+  color:#000;
+  font-weight:bold
 }
-.file-info{font-size:12px;color:#7fffd4}
-.log{height:90px;margin-top:12px}
-.download{display:none}
-.footer{margin-top:14px;font-size:11px;text-align:center;opacity:.7}
-.footer a{color:#7fffd4}
+#downloadBtn{
+  display:none;
+  background:#19ff8c;
+  color:#000
+}
+#log{
+  margin-top:10px;
+  height:120px;
+  overflow:auto;
+  background:#020817;
+  border-radius:10px;
+  padding:10px;
+  font-size:13px
+}
+.footer{
+  margin-top:15px;
+  text-align:center;
+  font-size:12px;
+  opacity:.8
+}
+.footer b{color:#00eaff}
 </style>
 </head>
 
 <body>
-<div class="card">
+<div class="box">
   <h1>🔐 Code Protector</h1>
-  <div class="sub">Anti-Reverse • Chunk Encode • No Freeze</div>
+  <div class="sub">Anti-Reverse · Chunk Encode · No Freeze</div>
 
-  <input type="file" id="file">
-  <div class="file-info" id="fname">Chưa chọn file</div>
+  <input type="file" id="file" accept=".py">
+  <input id="pass" placeholder="🔑 Mật khẩu">
+  <input id="owner" placeholder="© Bản quyền (VD: Hà Hữu Xuyên)">
 
-  <input id="pw" placeholder="🔑 Mật khẩu">
-  <input id="owner" placeholder="© Hà Hữu Xuyên">
+  <button onclick="start()">🔐 MÃ HÓA</button>
+  <button id="downloadBtn">⬇️ TẢI FILE ĐÃ MÃ HÓA</button>
 
-  <button onclick="encrypt()">1️⃣ MÃ HÓA</button>
-  <button id="downloadBtn" class="download">⬇️ TẢI FILE</button>
-
-  <textarea id="log" class="log" readonly placeholder="Log..."></textarea>
+  <div id="log"></div>
 
   <div class="footer">
-    © Hà Hữu Xuyên<br>
-    📧 <a href="mailto:ptuan9505@gmail.com">ptuan9505@gmail.com</a><br>
+    © <b>Hà Hữu Xuyên</b><br>
+    📧 ptuan9505@gmail.com<br>
     📱 Zalo: 0335853796
   </div>
 </div>
 
 <script>
-const fileInput=document.getElementById("file");
-const fname=document.getElementById("fname");
 const logBox=document.getElementById("log");
 const dlBtn=document.getElementById("downloadBtn");
 let blobURL=null;
 
-fileInput.onchange=()=>{
-  fname.textContent=fileInput.files[0]
-    ? "📄 "+fileInput.files[0].name
-    : "Chưa chọn file";
-};
-
 function log(t){
-  logBox.value+=t+"\\n";
+  logBox.innerHTML+=t+"<br>";
   logBox.scrollTop=logBox.scrollHeight;
 }
 
-// 🔥 XOR CHUNK
-function xorChunk(str,key,start,len){
-  let out=[];
-  for(let i=start;i<Math.min(start+len,str.length);i++){
-    out.push(str.charCodeAt(i)^key.charCodeAt(i%key.length));
-  }
-  return out;
+function sha256(str){
+  const buf=new TextEncoder().encode(str);
+  return crypto.subtle.digest("SHA-256",buf)
+    .then(b=>[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join(""));
 }
 
-function encrypt(){
-  const f=fileInput.files[0];
-  if(!f) return alert("Chưa chọn file");
-  const pw=document.getElementById("pw").value;
-  if(!pw) return alert("Chưa nhập mật khẩu");
-  const owner=document.getElementById("owner").value||"Hà Hữu Xuyên";
-
-  log("🔄 Đang đọc file...");
+async function start(){
+  logBox.innerHTML="";
   dlBtn.style.display="none";
 
-  const reader=new FileReader();
-  reader.onload=()=>{
-    const src=reader.result;
-    let pos=0;
-    const CHUNK=8192;
-    let result=[];
+  const f=document.getElementById("file").files[0];
+  if(!f){log("❌ Chưa chọn file");return}
 
-    log("🔐 Bắt đầu mã hóa...");
+  const pass=document.getElementById("pass").value;
+  const owner=document.getElementById("owner").value||"Unknown";
 
-    function step(){
-      if(pos<src.length){
-        result.push(...xorChunk(src,pw,pos,CHUNK));
-        pos+=CHUNK;
-        log("⏳ "+Math.min(100,Math.floor(pos/src.length*100))+"%");
-        setTimeout(step,0); // ⭐ NHẢ UI
-      }else{
-        finish();
-      }
-    }
+  log("📄 File: "+f.name);
+  log("🔐 Đang mã hóa...");
 
-    function finish(){
-      const enc=btoa(String.fromCharCode(...result));
-      const out=`# === PROTECTED FILE ===
-# © ${owner}
+  const text=await f.text();
+  const passHash=await sha256(pass);
+  const data=btoa(unescape(encodeURIComponent(text)));
 
+  let out=
+`# ==== CODE PROTECTED ====
+# Owner: ${owner}
 import base64,hashlib,sys
-DATA="${enc}"
 
-pw=input("🔐 Nhap mat khau: ")
-if hashlib.sha256(pw.encode()).hexdigest()!=hashlib.sha256("${pw}".encode()).hexdigest():
-    print("❌ Sai mat khau")
+PASS_HASH="${passHash}"
+DATA="${data}"
+
+pw=input("🔑 Nhập mật khẩu: ")
+if hashlib.sha256(pw.encode()).hexdigest()!=PASS_HASH:
+    print("❌ Truy cập trái phép")
     sys.exit()
 
-raw=base64.b64decode(DATA)
-real=bytes(raw[i]^pw.encode()[i%len(pw)] for i in range(len(raw)))
-exec(real.decode())
+exec(compile(base64.b64decode(DATA),"protected","exec"))
 `;
-      const blob=new Blob([out],{type:"text/plain"});
-      blobURL=URL.createObjectURL(blob);
 
-      dlBtn.onclick=()=>{
-        const a=document.createElement("a");
-        a.href=blobURL;
-        a.download=f.name;
-        a.click();
-      };
+  finish(out,f.name);
+}
 
-      dlBtn.style.display="block";
-      log("✅ Hoàn tất. Bấm TẢI FILE.");
-    }
+function finish(out,name){
+  const blob=new Blob([out],{type:"text/plain"});
+  blobURL=URL.createObjectURL(blob);
 
-    step();
+  dlBtn.style.display="block";
+  dlBtn.onclick=()=>{
+    const a=document.createElement("a");
+    a.href=blobURL;
+    a.download="protected_"+name;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
   };
-  reader.readAsText(f);
+
+  log("✅ Mã hóa hoàn tất");
+  log("⬇️ Nhấn nút tải file");
 }
 </script>
 </body>
