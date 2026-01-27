@@ -2,108 +2,139 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Gọi Món Online</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <title>ILike – Gọi Món Online</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
   <style>
     *{box-sizing:border-box}
-    body{font-family:Inter,Arial,sans-serif;background:linear-gradient(135deg,#ffecd2,#fcb69f);min-height:100vh;margin:0;padding:20px}
-    .card{max-width:520px;margin:auto;background:#fff;border-radius:18px;box-shadow:0 20px 40px rgba(0,0,0,.15);overflow:hidden}
-    .header{background:linear-gradient(135deg,#ff7a18,#ffb347);color:#fff;padding:18px 22px}
-    .header h1{margin:0;font-size:22px}
-    .content{padding:20px}
-    label{font-size:13px;color:#555}
-    input,textarea,button{width:100%;padding:12px;margin:8px 0;border-radius:10px;border:1px solid #ddd;font-size:14px}
-    textarea{resize:none}
-    .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-    .foods .food-item{display:grid;grid-template-columns:1fr 90px 36px;gap:8px;margin-bottom:8px}
-    .btn{background:#ff7a18;color:#fff;border:none;font-weight:700;cursor:pointer}
-    .btn.secondary{background:#eee;color:#333}
-    .btn.small{padding:8px}
-    .footer{padding:14px 20px;background:#fafafa;border-top:1px solid #eee}
-    .msg{margin-top:8px;font-weight:600}
-    .ok{color:#1a7f37}
-    .err{color:#c92a2a}
+    body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);min-height:100vh;margin:0;padding:16px;color:#111}
+    .app{max-width:980px;margin:auto}
+    .hero{background:linear-gradient(135deg,#ff7a18,#ffb347);border-radius:18px;padding:18px 20px;color:#fff;box-shadow:0 18px 40px rgba(0,0,0,.25)}
+    .hero h1{margin:0;font-size:28px;font-weight:800}
+    .hero p{margin:6px 0 0}
+    .grid{display:grid;grid-template-columns:1.2fr .8fr;gap:14px;margin-top:14px}
+    @media(max-width:900px){.grid{grid-template-columns:1fr}}.card{background:#fff;border-radius:18px;box-shadow:0 14px 32px rgba(0,0,0,.18);overflow:hidden}
+.card .hd{padding:14px 16px;border-bottom:1px solid #eee;font-weight:800}
+.card .bd{padding:14px 16px}
+
+.menu{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+@media(max-width:700px){.menu{grid-template-columns:1fr}}
+.cat{border:1px solid #eee;border-radius:14px;overflow:hidden}
+.cat .ct{background:#fafafa;padding:10px 12px;font-weight:800}
+.item{display:grid;grid-template-columns:1fr 60px 80px;gap:8px;align-items:center;padding:8px 12px;border-top:1px dashed #eee}
+.item small{color:#666}
+.item input{width:100%;padding:8px;border-radius:10px;border:1px solid #ddd}
+
+.form label{font-size:12px;color:#555}
+.form input,.form textarea,.form button{width:100%;padding:12px;border-radius:12px;border:1px solid #ddd;margin:8px 0}
+.form textarea{resize:none}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn{background:#ff7a18;color:#fff;border:none;font-weight:800;cursor:pointer}
+.btn.sec{background:#eee;color:#111}
+
+.msg{margin-top:8px;font-weight:700}
+.ok{color:#1a7f37}.err{color:#c92a2a}
+
+.foot{margin-top:14px;text-align:center;color:#fff;opacity:.9}
+.foot a{color:#ffe082;text-decoration:none;font-weight:700}
+
   </style>
 </head>
 <body>
-  <div class="card">
-    <div class="header">
-      <h1>🍔 Gọi Món Online</h1>
-      <div>Đặt món nhanh – gửi về Telegram</div>
-    </div><div class="content">
-  <label>Tên khách hàng</label>
-  <input id="name" placeholder="Nhập tên" />
-
-  <div class="row">
-    <div>
-      <label>Số điện thoại</label>
-      <input id="phone" placeholder="09xxxxxxxx" />
+<div class="app">
+  <div class="hero">
+    <h1>ILike – Gọi Món Online</h1>
+    <p>Chọn món • Nhập thông tin • Gửi đơn về Telegram</p>
+  </div>  <div class="grid">
+    <!-- MENU -->
+    <div class="card">
+      <div class="hd">📋 MENU</div>
+      <div class="bd">
+        <div class="menu" id="menu"></div>
+      </div>
+    </div><!-- FORM -->
+<div class="card">
+  <div class="hd">🧾 Thông tin & Gửi đơn</div>
+  <div class="bd form">
+    <label>Tên khách hàng</label>
+    <input id="name" placeholder="Nhập tên" />
+    <div class="row">
+      <div>
+        <label>Số điện thoại</label>
+        <input id="phone" placeholder="09xxxxxxxx" />
+      </div>
+      <div>
+        <label>Ghi chú</label>
+        <input id="note" placeholder="Ít đá, cay…" />
+      </div>
     </div>
-    <div>
-      <label>Ghi chú</label>
-      <input id="note" placeholder="Ít đá, cay..." />
-    </div>
+    <label>Địa chỉ giao hàng</label>
+    <textarea id="address" rows="2" placeholder="Số nhà, đường, phường…"></textarea>
+    <button class="btn" onclick="sendOrder()">🚀 Gửi đơn</button>
+    <div id="msg" class="msg"></div>
   </div>
-
-  <label>Địa chỉ giao hàng</label>
-  <textarea id="address" rows="2" placeholder="Số nhà, đường, phường..."></textarea>
-
-  <label>Món ăn</label>
-  <div class="foods" id="foods"></div>
-  <button type="button" class="btn secondary" onclick="addFood()">➕ Thêm món</button>
-
-  <button class="btn" onclick="sendOrder()">🚀 Gửi đơn</button>
-  <div id="msg" class="msg"></div>
 </div>
 
-<div class="footer">© Gọi Món</div>
+  </div>  <div class="foot">
+    📞 Liên hệ Zalo: <a href="https://zalo.me/0335853796" target="_blank">0335 853 796</a><br>
+    © Bản quyền thuộc <b>Hà Hữu Xuyên</b>
+  </div>
+</div><script>
+// TELEGRAM
+const BOT_TOKEN = "8508899978:AAEHyBa33sQqwcZYZUUqGX8bWWbngZ8ZmJ0";
+const CHAT_ID  = "8120207476";
 
-  </div><script>
-// ĐÃ GẮN TOKEN BOT THEO THÔNG TIN BẠN ĐÃ LƯU TRƯỚC ĐÓ
-const BOT_TOKEN = "8340836312:AAHC87iQUxbONjja4TlMYNLdMlW5HJQ05hU";
-const CHAT_ID = "YOUR_CHAT_ID"; // thay chat id của bạn
+// MENU DATA (rút gọn + có thể thêm tiếp)
+const DATA = [
+  {cat:"Trà sữa", items:[
+    ["Trà sữa truyền thống",20],["Trà sữa Like",25],["Trà sữa socola",28],["Trà sữa matcha",28]
+  ]},
+  {cat:"Macchiato", items:[
+    ["Hồng trà macchiato",22],["Trà đào macchiato",28],["Trà sữa caramel macchiato",32]
+  ]},
+  {cat:"Sữa chua", items:[
+    ["Sữa chua dâu",25],["Sữa chua kiwi",25],["Sữa chua việt quất",25]
+  ]},
+  {cat:"Soda", items:[
+    ["Soda blue",20],["Soda đào",20],["Soda kiwi",20]
+  ]},
+  {cat:"Ăn vặt", items:[
+    ["Tokbokki",35],["Gà rán",30],["Khoai tây chiên",15]
+  ]},
+  {cat:"Mỳ cay", items:[
+    ["Mỳ hải sản",48],["Mỳ bò",48],["Mỳ thập cẩm",58]
+  ]},
+];
 
-let foodCount = 0;
-function addFood(){
-  foodCount++;
-  const div = document.createElement('div');
-  div.className = 'food-item';
-  div.innerHTML = `
-    <input placeholder="Tên món" id="food_${foodCount}" />
-    <input placeholder="SL" id="qty_${foodCount}" />
-    <button class="btn small secondary" onclick="this.parentNode.remove()">✖</button>
-  `;
-  document.getElementById('foods').appendChild(div);
-}
-addFood();
+// RENDER MENU
+const menu = document.getElementById('menu');
+DATA.forEach((c,ci)=>{
+  const box=document.createElement('div');box.className='cat';
+  box.innerHTML=`<div class='ct'>${c.cat}</div>`;
+  c.items.forEach((it,ii)=>{
+    const id=`c${ci}i${ii}`;
+    const row=document.createElement('div');row.className='item';
+    row.innerHTML=`
+      <div><b>${it[0]}</b><br><small>${it[1]}K</small></div>
+      <input type='number' min='0' placeholder='SL' id='${id}' />
+      <small>Chọn</small>`;
+    box.appendChild(row);
+  });
+  menu.appendChild(box);
+});
 
 function sendOrder(){
-  const name = document.getElementById('name').value.trim();
-  const phone = document.getElementById('phone').value.trim();
-  const address = document.getElementById('address').value.trim();
-  const note = document.getElementById('note').value.trim();
-
-  let food = '';
-  for(let i=1;i<=foodCount;i++){
-    const f = document.getElementById(`food_${i}`)?.value;
-    const q = document.getElementById(`qty_${i}`)?.value;
-    if(f && q) food += `- ${f} x ${q}\n`;
-  }
-
-  if(!name || !phone || !address || !food){
-    msg('❌ Vui lòng nhập đủ thông tin','err');
-    return;
-  }
-
-  const text = `📦 ĐƠN GỌI MỚI\n\n👤 ${name}\n📞 ${phone}\n🏠 ${address}\n📝 ${note || 'Không'}\n\n🍽 Món:\n${food}`;
-
-  fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`,{
-    method:'POST',headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({chat_id:CHAT_ID,text})
-  })
-  .then(r=>r.json()).then(()=>msg('✅ Gửi đơn thành công','ok'))
-  .catch(()=>msg('❌ Lỗi gửi đơn','err'));
+  const name=nameEl.value.trim(), phone=phoneEl.value.trim(), address=addressEl.value.trim(), note=noteEl.value.trim();
+  let lines="";
+  DATA.forEach((c,ci)=>c.items.forEach((it,ii)=>{
+    const v=document.getElementById(`c${ci}i${ii}`).value;
+    if(v && Number(v)>0) lines+=`- ${it[0]} x ${v} (${it[1]}K)\n`;
+  }));
+  if(!name||!phone||!address||!lines){msg('❌ Thiếu thông tin hoặc chưa chọn món','err');return;}
+  const text=`📦 ĐƠN GỌI MỚI\n\n👤 ${name}\n📞 ${phone}\n🏠 ${address}\n📝 ${note||'Không'}\n\n🍽 Món:\n${lines}`;
+  fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat_id:CHAT_ID,text})})
+  .then(r=>r.json()).then(()=>msg('✅ Gửi đơn thành công','ok')).catch(()=>msg('❌ Lỗi gửi đơn','err'));
 }
+const nameEl=name, phoneEl=phone, addressEl=address, noteEl=note;
 function msg(t,c){const m=document.getElementById('msg');m.textContent=t;m.className='msg '+c}
 </script></body>
 </html>
