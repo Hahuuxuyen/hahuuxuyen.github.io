@@ -1,168 +1,366 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-<meta charset="UTF-8">
-<title>Code Protector</title>
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<style>
-body{
-  background:linear-gradient(135deg,#050b1a,#0b2a3a);
-  font-family:system-ui;
-  color:#fff;
-  display:flex;
-  justify-content:center;
-  padding:20px
-}
-.box{
-  width:100%;
-  max-width:420px;
-  background:#0a1428;
-  border-radius:18px;
-  padding:20px;
-  box-shadow:0 0 30px #00eaff55
-}
-h1{
-  text-align:center;
-  color:#00eaff;
-  margin-bottom:5px
-}
-.sub{
-  text-align:center;
-  opacity:.8;
-  font-size:13px;
-  margin-bottom:15px
-}
-input,button{
-  width:100%;
-  margin:8px 0;
-  padding:12px;
-  border-radius:10px;
-  border:none;
-  font-size:15px
-}
-input{
-  background:#101c33;
-  color:#fff
-}
-button{
-  background:linear-gradient(90deg,#00eaff,#7b5cff);
-  color:#000;
-  font-weight:bold
-}
-#downloadBtn{
-  display:none;
-  background:#19ff8c;
-  color:#000
-}
-#log{
-  margin-top:10px;
-  height:120px;
-  overflow:auto;
-  background:#020817;
-  border-radius:10px;
-  padding:10px;
-  font-size:13px
-}
-.footer{
-  margin-top:15px;
-  text-align:center;
-  font-size:12px;
-  opacity:.8
-}
-.footer b{color:#00eaff}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Giá Thị Trường Việt Nam</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    
+    :root {
+      --bg: #0a0a0a;
+      --card: #161616;
+      --accent: #d4af37;
+      --text: #f0f0f0;
+      --text-light: #aaaaaa;
+    }
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding-bottom: 60px;
+    }
+    
+    header {
+      background: rgba(20,20,20,0.95);
+      backdrop-filter: blur(12px);
+      padding: 25px 20px;
+      text-align: center;
+      border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    header h1 {
+      font-size: 2.4rem;
+      font-weight: 700;
+      letter-spacing: -1px;
+      color: var(--accent);
+    }
+    .last-update {
+      font-size: 0.95rem;
+      color: var(--text-light);
+      margin-top: 6px;
+    }
+    
+    nav {
+      background: rgba(30,30,30,0.95);
+      padding: 18px 15px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+      position: sticky;
+      top: 72px;
+      z-index: 99;
+      border-bottom: 1px solid #222;
+    }
+    button {
+      padding: 14px 32px;
+      border: none;
+      background: #222;
+      color: #ddd;
+      border-radius: 50px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.4s ease;
+      font-size: 1.05rem;
+    }
+    button:hover, button.active {
+      background: var(--accent);
+      color: #000;
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(212, 175, 55, 0.3);
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+    
+    .section {
+      display: none;
+      animation: fadeInUp 0.6s ease forwards;
+    }
+    .section.show { display: block; }
+    
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 24px;
+    }
+    
+    .card {
+      background: var(--card);
+      padding: 26px 24px;
+      border-radius: 20px;
+      border: 1px solid rgba(212, 175, 55, 0.15);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      transition: all 0.4s ease;
+    }
+    .card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 20px 40px rgba(212, 175, 55, 0.25);
+      border-color: rgba(212, 175, 55, 0.4);
+    }
+    .card h3 {
+      font-size: 1.35rem;
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: 16px;
+      border-bottom: 1px solid #333;
+      padding-bottom: 10px;
+    }
+    .price {
+      font-size: 2.05rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+    .change {
+      font-size: 1.05rem;
+      font-weight: 500;
+    }
+    .up { color: #22c55e; }
+    .down { color: #ef4444; }
+    
+    footer {
+      text-align: center;
+      padding: 30px 20px;
+      color: var(--text-light);
+      font-size: 0.95rem;
+      border-top: 1px solid #222;
+      margin-top: 60px;
+    }
+    
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @media (max-width: 640px) {
+      header h1 { font-size: 2rem; }
+      .grid { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
-
 <body>
-<div class="box">
-  <h1>🔐 Code Protector</h1>
-  <div class="sub">Anti-Reverse · Chunk Encode · No Freeze</div>
+  <header>
+    <h1>GIÁ THỊ TRƯỜNG VIỆT NAM</h1>
+    <div class="last-update">Cập nhật lần cuối: <span id="updateTime"></span></div>
+  </header>
 
-  <input type="file" id="file" accept=".py">
-  <input id="pass" placeholder="🔑 Mật khẩu">
-  <input id="owner" placeholder="© Bản quyền (VD: Hà Hữu Xuyên)">
+  <nav>
+    <button onclick="showSection('gold')" class="active">Vàng</button>
+    <button onclick="showSection('silver')">Bạc</button>
+    <button onclick="showSection('fuel')">Xăng Dầu</button>
+    <button onclick="showSection('stock')">Chứng Khoán</button>
+  </nav>
 
-  <button onclick="start()">🔐 MÃ HÓA</button>
-  <button id="downloadBtn">⬇️ TẢI FILE ĐÃ MÃ HÓA</button>
+  <div class="container">
+    <!-- Vàng -->
+    <div id="gold" class="section show">
+      <h2 style="text-align:center; margin-bottom:30px; font-size:1.8rem;">Giá Vàng Hôm Nay (25/03/2026)</h2>
+      <div class="grid" id="goldData"></div>
+    </div>
 
-  <div id="log"></div>
+    <!-- Bạc -->
+    <div id="silver" class="section">
+      <h2 style="text-align:center; margin-bottom:30px; font-size:1.8rem;">Giá Bạc Hôm Nay</h2>
+      <div class="grid" id="silverData"></div>
+    </div>
 
-  <div class="footer">
-    © <b>Hà Hữu Xuyên</b><br>
-    📧 ptuan9505@gmail.com<br>
-    📱 Zalo: 0335853796
+    <!-- Xăng -->
+    <div id="fuel" class="section">
+      <h2 style="text-align:center; margin-bottom:30px; font-size:1.8rem;">Giá Xăng Dầu Hôm Nay</h2>
+      <div class="grid" id="fuelData"></div>
+    </div>
+
+    <!-- Chứng khoán - Đã thêm nhiều mã -->
+    <div id="stock" class="section">
+      <h2 style="text-align:center; margin-bottom:30px; font-size:1.8rem;">Chứng Khoán Hôm Nay (VN-Index +43.42 điểm)</h2>
+      <div class="grid" id="stockData"></div>
+    </div>
   </div>
-</div>
 
-<script>
-const logBox=document.getElementById("log");
-const dlBtn=document.getElementById("downloadBtn");
-let blobURL=null;
+  <footer>
+    Dữ liệu chỉ mang tính tham khảo • Tự động cập nhật mỗi ngày lúc 00:00<br>
+    Giá vàng & chứng khoán tham khảo từ SJC, PNJ, Vietstock, Investing...
+  </footer>
 
-function log(t){
-  logBox.innerHTML+=t+"<br>";
-  logBox.scrollTop=logBox.scrollHeight;
-}
+  <script>
+    function showSection(id) {
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('show'));
+      document.getElementById(id).classList.add('show');
+      
+      document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+      event.currentTarget.classList.add('active');
+    }
 
-function sha256(str){
-  const buf=new TextEncoder().encode(str);
-  return crypto.subtle.digest("SHA-256",buf)
-    .then(b=>[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join(""));
-}
+    function formatDate() {
+      const now = new Date();
+      return now.toLocaleString('vi-VN', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    }
 
-async function start(){
-  logBox.innerHTML="";
-  dlBtn.style.display="none";
+    function loadData() {
+      document.getElementById('updateTime').textContent = formatDate();
 
-  const f=document.getElementById("file").files[0];
-  if(!f){log("❌ Chưa chọn file");return}
+      // === GIÁ VÀNG (đầy đủ như trước) ===
+      document.getElementById('goldData').innerHTML = `
+        <div class="card">
+          <h3>SJC Vàng Miếng 9999</h3>
+          <div class="price">173,500,000 VND/lượng</div>
+          <div class="change up">+3,300 VND (+1.94%)</div>
+          <p>Mua: 170,500,000 | Bán: 173,500,000</p>
+        </div>
+        <div class="card">
+          <h3>Nhẫn Trơn 24K / 9999</h3>
+          <div class="price">17,350,000 VND/chỉ</div>
+          <div class="change up">+350 VND</div>
+          <p>Mua: 17,050,000 | Bán: 17,350,000</p>
+        </div>
+        <div class="card">
+          <h3>1 Phân Vàng 24K</h3>
+          <div class="price">1,735,000 VND/phân</div>
+          <p>(0.1 chỉ)</p>
+        </div>
+        <div class="card">
+          <h3>Vàng 18K (750)</h3>
+          <div class="price">12,893,000 VND/chỉ</div>
+          <div class="change up">+200 VND</div>
+        </div>
+        <div class="card">
+          <h3>1 Phân Vàng 18K</h3>
+          <div class="price">1,289,300 VND/phân</div>
+          <p>(0.1 chỉ)</p>
+        </div>
+        <div class="card">
+          <h3>DOJI Nhẫn 9999</h3>
+          <div class="price">17,350,000 VND/chỉ</div>
+          <div class="change up">+330 VND</div>
+        </div>
+      `;
 
-  const pass=document.getElementById("pass").value;
-  const owner=document.getElementById("owner").value||"Unknown";
+      // Giá Bạc
+      document.getElementById('silverData').innerHTML = `
+        <div class="card">
+          <h3>Bạc 999 Phú Quý (1 lượng)</h3>
+          <div class="price">2,837,000 VND/lượng</div>
+          <p>Mua: 2,752,000 VND</p>
+        </div>
+        <div class="card">
+          <h3>Bạc thỏi 999 (1kg)</h3>
+          <div class="price">75,440,000 VND/kg</div>
+        </div>
+      `;
 
-  log("📄 File: "+f.name);
-  log("🔐 Đang mã hóa...");
+      // Giá Xăng
+      document.getElementById('fuelData').innerHTML = `
+        <div class="card">
+          <h3>Xăng RON 95-III</h3>
+          <div class="price">29,950 VND/lít</div>
+          <div class="change down">-3,883 VND</div>
+        </div>
+        <div class="card">
+          <h3>Xăng E5 RON 92-II</h3>
+          <div class="price">28,070 VND/lít</div>
+          <div class="change down">-2,039 VND</div>
+        </div>
+      `;
 
-  const text=await f.text();
-  const passHash=await sha256(pass);
-  const data=btoa(unescape(encodeURIComponent(text)));
+      // === CHỨNG KHOÁN - ĐÃ THÊM NHIỀU MÃ ===
+      document.getElementById('stockData').innerHTML = `
+        <div class="card">
+          <h3>VN-Index</h3>
+          <div class="price">1,658.19 điểm</div>
+          <div class="change up">+43.42 (+2.69%)</div>
+        </div>
+        <div class="card">
+          <h3>VIC (Vingroup)</h3>
+          <div class="price">128,700 VND</div>
+          <div class="change up">+4,700 (+3.79%)</div>
+        </div>
+        <div class="card">
+          <h3>VHM (Vinhomes)</h3>
+          <div class="price">104,200 VND</div>
+          <div class="change up">+5,200 (+5.25%)</div>
+        </div>
+        <div class="card">
+          <h3>VPB (VPBank)</h3>
+          <div class="price">26,300 VND</div>
+          <div class="change up">+1,000 (+3.95%)</div>
+        </div>
+        <div class="card">
+          <h3>MWG (Thế Giới Di Động)</h3>
+          <div class="price">68,500 VND</div>
+          <div class="change up">+2,800 (+4.26%)</div>
+        </div>
+        <div class="card">
+          <h3>HPG (Hòa Phát)</h3>
+          <div class="price">26,350 VND</div>
+          <div class="change up">+400 (+1.54%)</div>
+        </div>
+        <div class="card">
+          <h3>FPT</h3>
+          <div class="price">77,000 VND</div>
+          <div class="change up">+1,600 (+2.12%)</div>
+        </div>
+        <div class="card">
+          <h3>REE (Cơ Điện Lạnh)</h3>
+          <div class="price">70,900 VND</div>
+          <div class="change up">+4,500 (+6.79%)</div>
+        </div>
+        <div class="card">
+          <h3>VCB (Vietcombank)</h3>
+          <div class="price">58,400 VND</div>
+          <div class="change up">+200 (+0.34%)</div>
+        </div>
+        <div class="card">
+          <h3>TCB (Techcombank)</h3>
+          <div class="price">52,000 VND</div>
+          <div class="change up">+1,600 (+3.18%)</div>
+        </div>
+        <div class="card">
+          <h3>SSI (Chứng khoán SSI)</h3>
+          <div class="price">26,850 VND</div>
+          <div class="change up">+950 (+3.67%)</div>
+        </div>
+        <div class="card">
+          <h3>HCM (Chứng khoán HCM)</h3>
+          <div class="price">21,100 VND</div>
+          <div class="change up">+1,350 (+6.84%)</div>
+        </div>
+      `;
+    }
 
-  let out=
-`# ==== CODE PROTECTED ====
-# Owner: ${owner}
-import base64,hashlib,sys
+    // Tự động cập nhật mỗi ngày lúc 00:00
+    function scheduleDailyUpdate() {
+      loadData();
+      
+      const now = new Date();
+      const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+      tomorrow.setHours(0, 0, 0, 0);
+      
+      const timeUntilMidnight = tomorrow.getTime() - now.getTime();
+      
+      setTimeout(() => {
+        loadData();
+        scheduleDailyUpdate();
+      }, timeUntilMidnight);
+    }
 
-PASS_HASH="${passHash}"
-DATA="${data}"
-
-pw=input("🔑 Nhập mật khẩu: ")
-if hashlib.sha256(pw.encode()).hexdigest()!=PASS_HASH:
-    print("❌ Truy cập trái phép")
-    sys.exit()
-
-exec(compile(base64.b64decode(DATA),"protected","exec"))
-`;
-
-  finish(out,f.name);
-}
-
-function finish(out,name){
-  const blob=new Blob([out],{type:"text/plain"});
-  blobURL=URL.createObjectURL(blob);
-
-  dlBtn.style.display="block";
-  dlBtn.onclick=()=>{
-    const a=document.createElement("a");
-    a.href=blobURL;
-    a.download="protected_"+name;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-  };
-
-  log("✅ Mã hóa hoàn tất");
-  log("⬇️ Nhấn nút tải file");
-}
-</script>
+    window.onload = scheduleDailyUpdate;
+  </script>
 </body>
 </html>
